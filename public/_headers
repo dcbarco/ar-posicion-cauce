@@ -1,0 +1,31 @@
+/*
+  Permissions-Policy: xr-spatial-tracking=(self)
+  X-Content-Type-Options: nosniff
+
+/assets/*
+  Cache-Control: public, max-age=31536000, immutable
+
+/models/*
+  Cache-Control: public, max-age=31536000, immutable
+
+/models/manifest.json
+  ! Cache-Control
+  Cache-Control: no-cache
+
+/*.glb
+  Content-Type: model/gltf-binary
+
+/*.ktx2
+  Content-Type: image/ktx2
+
+/
+  Cache-Control: no-cache
+
+/index.html
+  Cache-Control: no-cache
+
+/manifest.webmanifest
+  Cache-Control: no-cache
+
+/sw.js
+  Cache-Control: no-cache

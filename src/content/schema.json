@@ -1,0 +1,51 @@
+{
+  "$comment": "Esquema de textos de Mesa CAUCE (Agente 4). Lo usa la prueba de textos del Agente 5. Ver docs/ARQUITECTURA.md D11, D12 y D16.",
+  "version": "1.0.0",
+  "languages": ["es"],
+  "encoding": "utf-8",
+  "format": "Cada archivo es un objeto JSON plano: clave (string) -> cadena (string). Sin objetos anidados.",
+  "keyPattern": "^[a-z0-9_]+(\\.[a-z0-9_]+)+$",
+  "typeRule": {
+    "description": "El tipo de una clave es el PRIMER segmento (separado por puntos) cuyo valor sea uno de los tipos. Toda clave debe contener al menos uno.",
+    "separator": ".",
+    "types": ["title", "label", "tip", "body", "modal"]
+  },
+  "limits": {
+    "title": 36,
+    "label": 28,
+    "tip": 90,
+    "body": 160,
+    "modal": 220
+  },
+  "lengthUnit": "Caracteres Unicode (puntos de código) de la cadena tal como está en el JSON, contando las variables {x} literalmente.",
+  "overrides": [
+    {
+      "pattern": "^home\\.card\\.[a-z0-9_]+\\.body$",
+      "max": 120,
+      "reason": "\"Qué vas a descubrir\" de HOME (D11)."
+    }
+  ],
+  "interpolation": {
+    "pattern": "\\{(\\w+)\\}",
+    "description": "Variables con t('clave', { s: 10 })."
+  },
+  "pieces": {
+    "description": "Fichas de piezas (D16).",
+    "name": "exp.<exp>.<modelo>.title.<partId>",
+    "description_key": "exp.<exp>.<modelo>.body.<partId>"
+  },
+  "files": {
+    "es": [
+      { "path": "src/content/es/common.json", "required": true, "devOnly": false },
+      { "path": "src/content/es/mock.json", "required": true, "devOnly": true },
+      { "path": "src/content/es/taller.json", "required": true, "devOnly": false },
+      { "path": "src/content/es/cosmos.json", "required": false, "devOnly": false, "phase": "F2" },
+      { "path": "src/content/es/cuenca.json", "required": false, "devOnly": false, "phase": "F2" }
+    ]
+  },
+  "rules": [
+    "Ninguna clave se repite entre archivos del mismo idioma.",
+    "Ninguna cadena está vacía ni tiene espacios al inicio o al final.",
+    "Las claves exp.<exp>.* van en <exp>.json; las demás en common.json."
+  ]
+}

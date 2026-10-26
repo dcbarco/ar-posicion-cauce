@@ -1,0 +1,86 @@
+{
+  "home.title": "Mesa CAUCE",
+  "home.tip.subtitle": "Elige un cauce y explóralo sobre la mesa: energía, agua o gravedad.",
+
+  "home.label.discover": "Qué vas a descubrir",
+  "ui.label.close": "Cerrar",
+
+  "home.card.taller.title": "Taller de Máquinas",
+  "home.card.taller.tip": "Desarma, mira, entiende. Abre una máquina y sigue el camino de la energía.",
+  "home.card.taller.body": "Cómo una máquina convierte energía en movimiento y qué hace cada una de sus piezas.",
+  "home.card.cuenca.title": "Cuenca Viva",
+  "home.card.cuenca.tip": "Cada decisión río arriba llega río abajo.",
+  "home.card.cuenca.body": "Cómo lo que hacemos en la montaña cambia el agua que llega al valle, y cómo buscar un equilibrio.",
+  "home.card.cosmos.title": "Gravedad y Cosmos",
+  "home.card.cosmos.tip": "Lanza un mundo y mira qué cauce dibuja.",
+  "home.card.cosmos.body": "Por qué una órbita es gravedad más velocidad, y cómo la masa y la distancia cambian la atracción.",
+
+  "intro.step1.title": "Toma la tablet",
+  "intro.step1.body": "Levántala con las dos manos y mira la mesa a través de la pantalla.",
+  "intro.step2.title": "Ubica la mesa",
+  "intro.step2.body": "Apunta al centro del tope y haz coincidir el rectángulo con la luz verde del borde.",
+  "intro.step3.title": "Explora",
+  "intro.step3.body": "Toca, arrastra y gira. Puedes rodear la mesa: el modelo se queda en su lugar.",
+  "intro.label.next": "Siguiente",
+  "intro.label.back": "Atrás",
+  "intro.label.enter": "Entrar en AR",
+  "intro.label.close": "Cerrar",
+
+  "scan.tip.move": "Mueve la tablet despacio hacia la mesa.",
+
+  "lock.tip.aim": "Apunta al centro de la mesa y toca la pantalla.",
+  "lock.tip.adjust": "Haz coincidir el rectángulo con la luz verde.",
+  "lock.label.confirm": "Listo, coincide",
+  "lock.label.left": "1 cm a la izquierda",
+  "lock.label.right": "1 cm a la derecha",
+  "lock.label.forward": "1 cm hacia adelante",
+  "lock.label.back": "1 cm hacia atrás",
+  "lock.label.rotate_left": "Girar 1° a la izquierda",
+  "lock.label.rotate_right": "Girar 1° a la derecha",
+  "lock.tip.done": "¡Mesa ubicada! Ya puedes rodearla.",
+
+  "place.tip.aim": "Mueve el círculo sobre la mesa y toca para ubicar el modelo.",
+  "place.tip.edge": "Muy cerca del borde. Acércalo un poco al centro.",
+  "place.tip.table": "Toca la mesa para empezar.",
+
+  "relocating.tip": "Reubicando… mueve la tablet despacio.",
+  "recalibrate.tip.suggest": "Parece que la mesa se corrió. ¿La ubicamos de nuevo?",
+  "recalibrate.label.do": "Ubicar la mesa",
+
+  "idle.title": "¿Sigues ahí?",
+  "idle.tip.countdown": "Volvemos al inicio en {s} s. Toca la pantalla para seguir.",
+  "idle.label.continue": "Sigo aquí",
+
+  "hud.label.switch": "Cambiar experiencia",
+  "hud.label.reset": "Reiniciar",
+  "hud.label.help": "Ayuda",
+  "hud.label.recalibrate": "Recalibrar mesa",
+  "hud.label.exit": "Salir",
+  "hud.label.sound_on": "Activar sonido",
+  "hud.label.sound_off": "Silenciar",
+
+  "switcher.title": "Elige otro cauce",
+  "switcher.label.close": "Cerrar",
+
+  "help.title": "¿Cómo se usa?",
+  "help.body.move": "Arrastra con un dedo para mover el modelo sobre la mesa.",
+  "help.body.rotate": "Gira dos dedos sobre la pantalla para dar vuelta al modelo.",
+  "help.body.scale": "Junta o separa dos dedos para hacerlo más pequeño o más grande.",
+  "help.body.select": "Toca una pieza para ver su nombre y qué hace. Toca dos veces para recentrar.",
+  "help.label.close": "Entendido",
+
+  "loading.label": "Preparando…",
+
+  "error.title": "Algo se enredó",
+  "error.body.generic": "No pasa nada. Volvemos a empezar en un momento.",
+  "error.label.restart": "Volver al inicio",
+
+  "operator.title": "Aviso para la persona operadora",
+  "operator.body.no_xr": "Este navegador no tiene WebXR. Abre la app en Chrome para Android actualizado.",
+  "operator.body.no_ar": "No hay sesión immersive-ar. Instala o actualiza Servicios de Google Play para RA (ARCore).",
+  "operator.body.insecure": "La página no está en contexto seguro. Ábrela por HTTPS o por localhost.",
+  "operator.body.session_failed": "No se pudo iniciar la sesión AR. Revisa el permiso de cámara y reinicia la app.",
+  "operator.label.restart": "Reintentar",
+
+  "sim.label.banner": "Modo simulador (sin AR)"
+}

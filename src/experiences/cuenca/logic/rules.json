@@ -1,0 +1,23 @@
+﻿{
+  "$comment": "Pesos y umbrales de Cuenca Viva (sección 7). Se balancean aquí sin tocar código. Unidades de juego.",
+  "grid": { "w": 100, "h": 70, "cell": 0.01 },
+  "rain": { "base": 1.0, "climateFactor": 0.5 },
+  "channelThreshold": 0.035,
+  "transportDecayPerCell": 0.004,
+  "tokenRadius": 0.06,
+  "flow": { "naturalScore": 75, "maxBoost": 0.3 },
+  "quality": { "c50": 15 },
+  "biodiversity": { "base": 60, "qualityKnee": 50, "qualityPenalty": 0.5 },
+  "wellbeing": { "base": 8, "weights": { "energy": 0.3, "food": 0.3, "housing": 0.25, "economy": 0.15 } },
+  "energy": { "scale": 4 },
+  "tokens": {
+    "paramo": { "retention": 0.06, "biodiversity": 8, "minHeightFrac": 0.6 },
+    "bosque": { "retention": 0.03, "biodiversity": 8, "erosionShield": 0.5, "shieldRadius": 0.12 },
+    "humedal": { "retention": 0.02, "biodiversity": 6, "filter": 0.6 },
+    "cultivo": { "consumption": 0.03, "biodiversity": -4, "load": 8, "slopeFactor": 40, "food": 0.6 },
+    "ciudad": { "consumption": 0.04, "biodiversity": -6, "load": 30, "housing": 0.8 },
+    "industria": { "consumption": 0.05, "biodiversity": -8, "load": 50, "economy": 1.0 },
+    "represa": { "consumption": 0.12, "biodiversity": -15, "sedimentTrap": 0.5 },
+    "ptar": { "treat": 0.8, "radius": 0.18, "biodiversity": 0 }
+  }
+}

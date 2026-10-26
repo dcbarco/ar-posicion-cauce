@@ -1,0 +1,75 @@
+/* src/ui/tokens.css — tokens de diseño de Mesa CAUCE (Agente 3).
+ * Fuente: sección 9 del brief. Todo el CSS de la UI usa estas variables; no hay colores sueltos.
+ * Contraste: los paneles son ≥ 82 % opacos para garantizar ≥ 4,5:1 con --cx-text sobre el video
+ * de la cámara (en DOM Overlay el desenfoque no siempre alcanza al video). */
+:root {
+  /* Identidad */
+  --cx-accent: #41b270; /* luz LED del borde de la mesa */
+  --cx-accent-hi: #6fd498; /* brillo / cabeza de las líneas de luz */
+  --cx-accent-ink: #062619; /* texto sobre acento (contraste ≈ 6:1) */
+  --cx-accent-soft: rgba(65, 178, 112, 0.22);
+  --cx-accent-line: rgba(65, 178, 112, 0.55);
+  --cx-panel-solid: #0e3a43; /* verde azulado de la señalética */
+  --cx-panel: rgba(14, 58, 67, 0.86);
+  --cx-panel-strong: rgba(9, 40, 47, 0.94);
+  --cx-panel-deep: #072227;
+  --cx-panel-border: rgba(245, 242, 235, 0.16);
+  --cx-text: #f5f2eb;
+  --cx-text-dim: rgba(245, 242, 235, 0.82);
+  --cx-warn: #f2b134; /* alerta ámbar */
+  --cx-warn-ink: #2b1d00;
+  --cx-scrim: rgba(4, 22, 26, 0.62);
+
+  /* Tipografía (Lexend Variable empaquetada; ver src/ui/index.ts) */
+  --cx-font: 'Lexend Variable', 'Lexend', system-ui, sans-serif;
+  --cx-fs-body: 18px; /* mínimo absoluto de la UI */
+  --cx-fs-lead: 20px;
+  --cx-fs-title: 26px; /* títulos ≥ 24 px */
+  --cx-fs-display: 40px;
+  --cx-fs-number: 32px;
+  --cx-lh: 1.35;
+
+  /* Espacios: separación entre objetivos táctiles ≥ 12 px */
+  --cx-s1: 4px;
+  --cx-s2: 8px;
+  --cx-s3: 12px;
+  --cx-s4: 16px;
+  --cx-s5: 24px;
+  --cx-s6: 32px;
+  --cx-s7: 48px;
+  --cx-gap: 12px;
+  --cx-edge: 16px; /* margen a los bordes de la pantalla */
+
+  /* Tamaños táctiles: ≥ 56 px */
+  --cx-hit: 56px;
+  --cx-hit-lg: 64px;
+  --cx-hit-xl: 72px;
+
+  /* Radios */
+  --cx-r-sm: 12px;
+  --cx-r-md: 16px;
+  --cx-r-lg: 24px;
+  --cx-r-pill: 999px;
+
+  /* Sombras y desenfoque */
+  --cx-shadow: 0 10px 28px rgba(0, 0, 0, 0.38);
+  --cx-shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.3);
+  --cx-glow: 0 0 0 2px var(--cx-accent), 0 0 18px rgba(65, 178, 112, 0.55);
+  --cx-blur: blur(14px) saturate(1.2);
+
+  /* Movimiento: 250–600 ms, ease-out, solo transform/opacity */
+  --cx-dur-press: 80ms; /* respuesta al toque < 100 ms */
+  --cx-dur-fast: 250ms;
+  --cx-dur: 350ms;
+  --cx-dur-slow: 600ms;
+  --cx-ease: cubic-bezier(0.215, 0.61, 0.355, 1); /* ease-out cubic */
+  --cx-ease-expo: cubic-bezier(0.16, 1, 0.3, 1); /* ease-out expo */
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --cx-dur-fast: 1ms;
+    --cx-dur: 1ms;
+    --cx-dur-slow: 1ms;
+  }
+}

@@ -1,0 +1,262 @@
+{
+  "$comment": "Registro de modelos del Agente 2. optimize.mjs construye/optimiza cada entrada y validate.mjs la verifica y genera public/models/manifest.json. kind: hero (piezas desarmables) | prop (objeto simple). sourceUrl de modelos propios = ruta del script en el repo.",
+  "limits": {
+    "heroMaxTris": 150000,
+    "maxMaterials": 8,
+    "maxTextureSize": 2048,
+    "maxTextureSizeNoKtx2": 1024,
+    "maxFileKB": 15360,
+    "experienceBudgetKB": 12288,
+    "heroBaseMax": 0.35,
+    "explodedMax": [
+      0.9,
+      0.6
+    ],
+    "overlapTolerance": 0.0005
+  },
+  "models": [
+    {
+      "id": "motor4t",
+      "experience": "taller",
+      "kind": "hero",
+      "build": "tools/models/build/motor4t.mjs",
+      "src": "assets-src/taller/motor4t.src.glb",
+      "file": "taller/motor4t.glb",
+      "license": "own",
+      "author": "Mesa CAUCE — Agente 2 (modelo procedural propio)",
+      "sourceUrl": "repo:tools/models/build/motor4t.mjs",
+      "notes": "Procedural (three + gltf-transform), sin texturas: PBR por factores. Meshopt. Cadena de distribución estática en anim_cycle.",
+      "clips": {
+        "anim_cycle": {
+          "duration": 8,
+          "loop": true
+        }
+      },
+      "requiredParts": [
+        "crankcase_left",
+        "crankcase_right",
+        "cylinder",
+        "cylinder_head",
+        "valve_cover",
+        "piston",
+        "piston_rings",
+        "piston_pin",
+        "connecting_rod",
+        "crankshaft",
+        "flywheel",
+        "camshaft",
+        "timing_gear_crank",
+        "timing_gear_cam",
+        "timing_chain",
+        "intake_valve",
+        "exhaust_valve",
+        "valve_spring_intake",
+        "valve_spring_exhaust",
+        "rocker_intake",
+        "rocker_exhaust",
+        "spark_plug",
+        "intake_manifold",
+        "carburetor",
+        "exhaust_pipe",
+        "oil_pan"
+      ],
+      "requiredPivots": [
+        "crankshaft",
+        "camshaft"
+      ],
+      "requiredAnchors": [
+        "label_top",
+        "combustion"
+      ]
+    },
+    {
+      "id": "cuenca_paramo",
+      "experience": "cuenca",
+      "kind": "prop",
+      "build": "tools/models/build/cuenca-fichas.mjs",
+      "buildArgs": [
+        "cuenca_paramo"
+      ],
+      "src": "assets-src/cuenca/cuenca_paramo.src.glb",
+      "file": "cuenca/cuenca_paramo.glb",
+      "license": "own",
+      "author": "Mesa CAUCE — Agente 2 (modelo procedural propio)",
+      "sourceUrl": "repo:tools/models/build/cuenca-fichas.mjs",
+      "notes": "Ficha de páramo con frailejones. Low-poly facetado, sin texturas.",
+      "minTris": 5000,
+      "maxTris": 10000,
+      "maxFootprint": 0.12,
+      "clips": {},
+      "requiredAnchors": [
+        "label_top"
+      ]
+    },
+    {
+      "id": "cuenca_bosque",
+      "experience": "cuenca",
+      "kind": "prop",
+      "build": "tools/models/build/cuenca-fichas.mjs",
+      "buildArgs": [
+        "cuenca_bosque"
+      ],
+      "src": "assets-src/cuenca/cuenca_bosque.src.glb",
+      "file": "cuenca/cuenca_bosque.glb",
+      "license": "own",
+      "author": "Mesa CAUCE — Agente 2 (modelo procedural propio)",
+      "sourceUrl": "repo:tools/models/build/cuenca-fichas.mjs",
+      "notes": "Ficha de bosque andino. Low-poly facetado, sin texturas.",
+      "minTris": 5000,
+      "maxTris": 10000,
+      "maxFootprint": 0.12,
+      "clips": {},
+      "requiredAnchors": [
+        "label_top"
+      ]
+    },
+    {
+      "id": "cuenca_humedal",
+      "experience": "cuenca",
+      "kind": "prop",
+      "build": "tools/models/build/cuenca-fichas.mjs",
+      "buildArgs": [
+        "cuenca_humedal"
+      ],
+      "src": "assets-src/cuenca/cuenca_humedal.src.glb",
+      "file": "cuenca/cuenca_humedal.glb",
+      "license": "own",
+      "author": "Mesa CAUCE — Agente 2 (modelo procedural propio)",
+      "sourceUrl": "repo:tools/models/build/cuenca-fichas.mjs",
+      "notes": "Ficha de humedal con juncos. Low-poly facetado, sin texturas.",
+      "minTris": 5000,
+      "maxTris": 10000,
+      "maxFootprint": 0.12,
+      "clips": {},
+      "requiredAnchors": [
+        "label_top",
+        "water"
+      ]
+    },
+    {
+      "id": "cuenca_cultivo",
+      "experience": "cuenca",
+      "kind": "prop",
+      "build": "tools/models/build/cuenca-fichas.mjs",
+      "buildArgs": [
+        "cuenca_cultivo"
+      ],
+      "src": "assets-src/cuenca/cuenca_cultivo.src.glb",
+      "file": "cuenca/cuenca_cultivo.glb",
+      "license": "own",
+      "author": "Mesa CAUCE — Agente 2 (modelo procedural propio)",
+      "sourceUrl": "repo:tools/models/build/cuenca-fichas.mjs",
+      "notes": "Ficha de cultivo en surcos (café y papa). Low-poly facetado, sin texturas.",
+      "minTris": 5000,
+      "maxTris": 10000,
+      "maxFootprint": 0.12,
+      "clips": {},
+      "requiredAnchors": [
+        "label_top"
+      ]
+    },
+    {
+      "id": "cuenca_ciudad",
+      "experience": "cuenca",
+      "kind": "prop",
+      "build": "tools/models/build/cuenca-fichas.mjs",
+      "buildArgs": [
+        "cuenca_ciudad"
+      ],
+      "src": "assets-src/cuenca/cuenca_ciudad.src.glb",
+      "file": "cuenca/cuenca_ciudad.glb",
+      "license": "own",
+      "author": "Mesa CAUCE — Agente 2 (modelo procedural propio)",
+      "sourceUrl": "repo:tools/models/build/cuenca-fichas.mjs",
+      "notes": "Ficha de ciudad. Low-poly facetado, sin texturas.",
+      "minTris": 5000,
+      "maxTris": 10000,
+      "maxFootprint": 0.12,
+      "clips": {},
+      "requiredAnchors": [
+        "label_top",
+        "sewage"
+      ]
+    },
+    {
+      "id": "cuenca_industria",
+      "experience": "cuenca",
+      "kind": "prop",
+      "build": "tools/models/build/cuenca-fichas.mjs",
+      "buildArgs": [
+        "cuenca_industria"
+      ],
+      "src": "assets-src/cuenca/cuenca_industria.src.glb",
+      "file": "cuenca/cuenca_industria.glb",
+      "license": "own",
+      "author": "Mesa CAUCE — Agente 2 (modelo procedural propio)",
+      "sourceUrl": "repo:tools/models/build/cuenca-fichas.mjs",
+      "notes": "Ficha de industria con chimeneas. Low-poly facetado, sin texturas.",
+      "minTris": 5000,
+      "maxTris": 10000,
+      "maxFootprint": 0.12,
+      "clips": {},
+      "requiredAnchors": [
+        "label_top",
+        "smoke_1",
+        "smoke_2",
+        "outfall"
+      ]
+    },
+    {
+      "id": "cuenca_represa",
+      "experience": "cuenca",
+      "kind": "prop",
+      "build": "tools/models/build/cuenca-fichas.mjs",
+      "buildArgs": [
+        "cuenca_represa"
+      ],
+      "src": "assets-src/cuenca/cuenca_represa.src.glb",
+      "file": "cuenca/cuenca_represa.glb",
+      "license": "own",
+      "author": "Mesa CAUCE — Agente 2 (modelo procedural propio)",
+      "sourceUrl": "repo:tools/models/build/cuenca-fichas.mjs",
+      "notes": "Ficha de represa con embalse. Low-poly facetado, sin texturas.",
+      "minTris": 5000,
+      "maxTris": 10000,
+      "maxFootprint": 0.12,
+      "clips": {},
+      "requiredAnchors": [
+        "label_top",
+        "spillway",
+        "turbine"
+      ]
+    },
+    {
+      "id": "cuenca_ptar",
+      "experience": "cuenca",
+      "kind": "prop",
+      "build": "tools/models/build/cuenca-fichas.mjs",
+      "buildArgs": [
+        "cuenca_ptar"
+      ],
+      "src": "assets-src/cuenca/cuenca_ptar.src.glb",
+      "file": "cuenca/cuenca_ptar.glb",
+      "license": "own",
+      "author": "Mesa CAUCE — Agente 2 (modelo procedural propio)",
+      "sourceUrl": "repo:tools/models/build/cuenca-fichas.mjs",
+      "notes": "Ficha de PTAR con clarificadores. Low-poly facetado, sin texturas.",
+      "minTris": 5000,
+      "maxTris": 10000,
+      "maxFootprint": 0.12,
+      "clips": {
+        "anim_idle": {
+          "duration": 12,
+          "loop": true
+        }
+      },
+      "requiredAnchors": [
+        "label_top",
+        "water"
+      ]
+    }
+  ]
+}

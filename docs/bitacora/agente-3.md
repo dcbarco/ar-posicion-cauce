@@ -1,0 +1,5 @@
+# Bitácora — Agente 3
+
+- 2026-10-26 · Hice: F0+F1 de UI/FX/audio — `tokens.css` + `ui.css` (Lexend empaquetada), componentes (botón, slider, interruptor, selector, bandeja con arrastre `ui:tray-drag`, lectura, ficha anclada, modal, toast, menú contextual, HUD), renderizador `ControlSpec[]` con reconciliación por id, todas las pantallas del flujo (boot, operador, home, intro, scan, lock ±1 cm/±1°, place, explore, velo, recalibrar, inactividad, cambio, ayuda, banner sim), playground `?ui=1` con escena FX, FxKit (borde LED con flujo/pulso/barrido, retícula ok/warn con formas distintas, sello appear/disappear con líneas de luz, contorno, fantasma, 3 niveles) y AudioKit WebAudio. Probado en `?ui=1` y `?sim=1` (headless).
+- Sigue: F2 (coreografías por experiencia en `src/experiences/*/anim/`: explosión en cascada, rejilla de Cosmos, agua de Cuenca), prueba en tablet real de legibilidad, contraste al sol y que `beforexrselect` no deja pasar toques.
+- Necesito: A4 → `ui.label.close` y `home.label.discover` (P-009); A1 → responder P-010 (`placeMode` en el snapshot, acción `close` reservada, firma `TableSpec` en `createTableEdge`).

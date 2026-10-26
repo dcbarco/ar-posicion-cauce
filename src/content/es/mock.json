@@ -1,0 +1,16 @@
+{
+  "exp.mock.demo.label.explode": "Separar",
+  "exp.mock.demo.label.xray": "Rayos X",
+  "exp.mock.demo.label.play": "Reproducir",
+  "exp.mock.demo.label.tray": "Figuras",
+  "exp.mock.demo.label.cube": "Cubo",
+  "exp.mock.demo.label.sphere": "Esfera",
+  "exp.mock.demo.label.cone": "Cono",
+  "exp.mock.demo.label.speed": "Velocidad",
+  "exp.mock.demo.label.speed_slow": "Lenta",
+  "exp.mock.demo.label.speed_normal": "Normal",
+  "exp.mock.demo.label.speed_fast": "Rápida",
+  "exp.mock.demo.label.count": "Figuras en la mesa",
+  "exp.mock.demo.title.selected": "Figura de prueba",
+  "exp.mock.demo.body.selected": "Esta es una figura de prueba para desarrollo."
+}

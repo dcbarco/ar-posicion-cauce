@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Visor de modelos — Mesa CAUCE</title>
+  <style>
+    :root { --bg: #14262b; --panel: #0e3a43e6; --text: #f5f2eb; --muted: #a9bcbf; --accent: #41b270; --warn: #f2b134; --bad: #e0644f; }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; height: 100%; background: var(--bg); color: var(--text); font: 14px/1.4 system-ui, sans-serif; }
+    #view { position: fixed; inset: 0; }
+    #ui { position: fixed; top: 0; left: 0; bottom: 0; width: 320px; overflow-y: auto; padding: 12px 14px; background: var(--panel); backdrop-filter: blur(8px); }
+    h1 { font-size: 16px; margin: 0 0 8px; color: var(--accent); }
+    h2 { font-size: 12px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); margin: 14px 0 6px; }
+    select, button, input[type=range] { width: 100%; }
+    select, button { background: #0b2a31; color: var(--text); border: 1px solid #2b5a63; border-radius: 6px; padding: 6px 8px; font: inherit; cursor: pointer; }
+    button.on { border-color: var(--accent); color: var(--accent); }
+    .row { display: flex; gap: 6px; align-items: center; margin: 4px 0; }
+    .row > * { flex: 1; }
+    label.chk { display: flex; gap: 6px; align-items: center; cursor: pointer; }
+    label.chk input { width: auto; }
+    #stats, #issues { font: 12px/1.5 ui-monospace, monospace; white-space: pre-wrap; color: var(--muted); }
+    #issues .bad { color: var(--bad); } #issues .ok { color: var(--accent); }
+    #parts { list-style: none; padding: 0; margin: 0; font-size: 13px; }
+    #parts li { padding: 3px 6px; border-radius: 4px; cursor: pointer; display: flex; justify-content: space-between; }
+    #parts li:hover { background: #ffffff14; } #parts li.sel { background: #41b27033; color: var(--accent); }
+    #parts small { color: var(--muted); }
+    #help { position: fixed; right: 10px; bottom: 8px; color: var(--muted); font-size: 12px; }
+  </style>
+  <script type="importmap">
+    { "imports": { "three": "/node_modules/three/build/three.module.js", "three/addons/": "/node_modules/three/examples/jsm/" } }
+  </script>
+</head>
+<body>
+  <div id="view"></div>
+  <div id="ui">
+    <h1>Visor de modelos · CAUCE</h1>
+    <select id="model"></select>
+    <div class="row"><input id="file" placeholder="o ruta: /assets-src/taller/motor4t.src.glb" style="flex:3;background:#0b2a31;color:inherit;border:1px solid #2b5a63;border-radius:6px;padding:6px" /><button id="loadFile">Cargar</button></div>
+    <h2>Explosión <span id="explodeVal">0 %</span></h2>
+    <input id="explode" type="range" min="0" max="100" value="0" />
+    <label class="chk"><input type="checkbox" id="cascade" checked /> cascada por orden (40 ms × orden)</label>
+    <h2>Clips</h2>
+    <div id="clips"></div>
+    <div class="row"><span>Velocidad</span><input id="speed" type="range" min="0.1" max="2" step="0.05" value="1" /><span id="speedVal">1×</span></div>
+    <h2>Vista</h2>
+    <label class="chk"><input type="checkbox" id="table" checked /> mesa 100 × 70 y área 0,90 × 0,60</label>
+    <label class="chk"><input type="checkbox" id="base" checked /> huella 0,35 × 0,35</label>
+    <label class="chk"><input type="checkbox" id="wire" /> alambre</label>
+    <label class="chk"><input type="checkbox" id="xray" /> rayos X (todo translúcido)</label>
+    <label class="chk"><input type="checkbox" id="anchors" checked /> anclas</label>
+    <label class="chk"><input type="checkbox" id="boxes" /> cajas de piezas (interpenetración)</label>
+    <h2>Estado</h2>
+    <div id="stats"></div>
+    <div id="issues"></div>
+    <h2>Piezas</h2>
+    <ul id="parts"></ul>
+  </div>
+  <div id="help">arrastrar: girar · rueda: zoom · clic en pieza: aislar · Esc: limpiar</div>
+  <script type="module" src="/tools/models/viewer/viewer.js"></script>
+</body>
+</html>

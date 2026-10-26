@@ -1,0 +1,558 @@
+{
+  "version": 1,
+  "models": [
+    {
+      "id": "motor4t",
+      "file": "taller/motor4t.glb",
+      "experience": "taller",
+      "tris": 80436,
+      "sizeKB": 887.3,
+      "parts": [
+        {
+          "partId": "oil_pan",
+          "labelKey": "exp.taller.motor4t.title.oil_pan",
+          "requires": [
+            "crankcase_left",
+            "crankcase_right"
+          ]
+        },
+        {
+          "partId": "valve_cover",
+          "labelKey": "exp.taller.motor4t.title.valve_cover",
+          "requires": [
+            "rocker_intake",
+            "rocker_exhaust",
+            "camshaft",
+            "timing_gear_cam"
+          ]
+        },
+        {
+          "partId": "flywheel",
+          "labelKey": "exp.taller.motor4t.title.flywheel",
+          "requires": [
+            "crankcase_left"
+          ]
+        },
+        {
+          "partId": "spark_plug",
+          "labelKey": "exp.taller.motor4t.title.spark_plug",
+          "requires": [
+            "cylinder_head"
+          ]
+        },
+        {
+          "partId": "carburetor",
+          "labelKey": "exp.taller.motor4t.title.carburetor",
+          "requires": [
+            "intake_manifold"
+          ]
+        },
+        {
+          "partId": "exhaust_pipe",
+          "labelKey": "exp.taller.motor4t.title.exhaust_pipe",
+          "requires": [
+            "cylinder_head"
+          ]
+        },
+        {
+          "partId": "rocker_intake",
+          "labelKey": "exp.taller.motor4t.title.rocker_intake",
+          "requires": [
+            "valve_spring_intake"
+          ]
+        },
+        {
+          "partId": "rocker_exhaust",
+          "labelKey": "exp.taller.motor4t.title.rocker_exhaust",
+          "requires": [
+            "valve_spring_exhaust"
+          ]
+        },
+        {
+          "partId": "timing_gear_cam",
+          "labelKey": "exp.taller.motor4t.title.timing_gear_cam",
+          "requires": [
+            "camshaft",
+            "timing_chain"
+          ]
+        },
+        {
+          "partId": "intake_manifold",
+          "labelKey": "exp.taller.motor4t.title.intake_manifold",
+          "requires": [
+            "cylinder_head"
+          ]
+        },
+        {
+          "partId": "valve_spring_intake",
+          "labelKey": "exp.taller.motor4t.title.valve_spring_intake",
+          "requires": [
+            "intake_valve"
+          ]
+        },
+        {
+          "partId": "valve_spring_exhaust",
+          "labelKey": "exp.taller.motor4t.title.valve_spring_exhaust",
+          "requires": [
+            "exhaust_valve"
+          ]
+        },
+        {
+          "partId": "timing_chain",
+          "labelKey": "exp.taller.motor4t.title.timing_chain",
+          "requires": [
+            "timing_gear_crank",
+            "camshaft"
+          ]
+        },
+        {
+          "partId": "intake_valve",
+          "labelKey": "exp.taller.motor4t.title.intake_valve",
+          "requires": [
+            "cylinder_head"
+          ]
+        },
+        {
+          "partId": "exhaust_valve",
+          "labelKey": "exp.taller.motor4t.title.exhaust_valve",
+          "requires": [
+            "cylinder_head"
+          ]
+        },
+        {
+          "partId": "camshaft",
+          "labelKey": "exp.taller.motor4t.title.camshaft",
+          "requires": [
+            "cylinder_head"
+          ]
+        },
+        {
+          "partId": "timing_gear_crank",
+          "labelKey": "exp.taller.motor4t.title.timing_gear_crank",
+          "requires": [
+            "crankcase_right"
+          ]
+        },
+        {
+          "partId": "cylinder_head",
+          "labelKey": "exp.taller.motor4t.title.cylinder_head",
+          "requires": [
+            "cylinder"
+          ]
+        },
+        {
+          "partId": "cylinder",
+          "labelKey": "exp.taller.motor4t.title.cylinder",
+          "requires": [
+            "crankcase_left",
+            "crankcase_right",
+            "piston_rings",
+            "piston_pin"
+          ]
+        },
+        {
+          "partId": "piston_rings",
+          "labelKey": "exp.taller.motor4t.title.piston_rings",
+          "requires": [
+            "piston"
+          ]
+        },
+        {
+          "partId": "piston_pin",
+          "labelKey": "exp.taller.motor4t.title.piston_pin",
+          "requires": [
+            "piston",
+            "connecting_rod"
+          ]
+        },
+        {
+          "partId": "crankcase_right",
+          "labelKey": "exp.taller.motor4t.title.crankcase_right",
+          "requires": [
+            "crankshaft"
+          ]
+        },
+        {
+          "partId": "crankcase_left",
+          "labelKey": "exp.taller.motor4t.title.crankcase_left",
+          "requires": [
+            "crankshaft"
+          ]
+        },
+        {
+          "partId": "piston",
+          "labelKey": "exp.taller.motor4t.title.piston",
+          "requires": [
+            "connecting_rod"
+          ]
+        },
+        {
+          "partId": "connecting_rod",
+          "labelKey": "exp.taller.motor4t.title.connecting_rod",
+          "requires": [
+            "crankshaft"
+          ]
+        },
+        {
+          "partId": "crankshaft",
+          "labelKey": "exp.taller.motor4t.title.crankshaft"
+        }
+      ],
+      "clips": [
+        {
+          "name": "anim_cycle",
+          "duration": 8,
+          "loop": true
+        }
+      ],
+      "bounds": {
+        "assembled": {
+          "min": [
+            -0.1115,
+            0,
+            -0.168
+          ],
+          "max": [
+            0.0915,
+            0.396,
+            0.1668
+          ]
+        },
+        "exploded": {
+          "min": [
+            -0.4194,
+            0,
+            -0.3035
+          ],
+          "max": [
+            0.3845,
+            0.625,
+            0.2518
+          ]
+        }
+      },
+      "license": "own",
+      "author": "Mesa CAUCE — Agente 2 (modelo procedural propio)",
+      "sourceUrl": "repo:tools/models/build/motor4t.mjs",
+      "notes": "Procedural (three + gltf-transform), sin texturas: PBR por factores. Meshopt. Cadena de distribución estática en anim_cycle."
+    },
+    {
+      "id": "cuenca_paramo",
+      "file": "cuenca/cuenca_paramo.glb",
+      "experience": "cuenca",
+      "tris": 5196,
+      "sizeKB": 92,
+      "parts": [],
+      "clips": [],
+      "bounds": {
+        "assembled": {
+          "min": [
+            -0.0558,
+            0,
+            -0.0571
+          ],
+          "max": [
+            0.0558,
+            0.0483,
+            0.0558
+          ]
+        },
+        "exploded": {
+          "min": [
+            -0.0558,
+            0,
+            -0.0571
+          ],
+          "max": [
+            0.0558,
+            0.0483,
+            0.0558
+          ]
+        }
+      },
+      "license": "own",
+      "author": "Mesa CAUCE — Agente 2 (modelo procedural propio)",
+      "sourceUrl": "repo:tools/models/build/cuenca-fichas.mjs",
+      "notes": "Ficha de páramo con frailejones. Low-poly facetado, sin texturas."
+    },
+    {
+      "id": "cuenca_bosque",
+      "file": "cuenca/cuenca_bosque.glb",
+      "experience": "cuenca",
+      "tris": 5028,
+      "sizeKB": 109.2,
+      "parts": [],
+      "clips": [],
+      "bounds": {
+        "assembled": {
+          "min": [
+            -0.0566,
+            0,
+            -0.0558
+          ],
+          "max": [
+            0.0558,
+            0.0749,
+            0.0558
+          ]
+        },
+        "exploded": {
+          "min": [
+            -0.0566,
+            0,
+            -0.0558
+          ],
+          "max": [
+            0.0558,
+            0.0749,
+            0.0558
+          ]
+        }
+      },
+      "license": "own",
+      "author": "Mesa CAUCE — Agente 2 (modelo procedural propio)",
+      "sourceUrl": "repo:tools/models/build/cuenca-fichas.mjs",
+      "notes": "Ficha de bosque andino. Low-poly facetado, sin texturas."
+    },
+    {
+      "id": "cuenca_humedal",
+      "file": "cuenca/cuenca_humedal.glb",
+      "experience": "cuenca",
+      "tris": 5176,
+      "sizeKB": 77.7,
+      "parts": [],
+      "clips": [],
+      "bounds": {
+        "assembled": {
+          "min": [
+            -0.0558,
+            0,
+            -0.0558
+          ],
+          "max": [
+            0.0558,
+            0.0426,
+            0.0558
+          ]
+        },
+        "exploded": {
+          "min": [
+            -0.0558,
+            0,
+            -0.0558
+          ],
+          "max": [
+            0.0558,
+            0.0426,
+            0.0558
+          ]
+        }
+      },
+      "license": "own",
+      "author": "Mesa CAUCE — Agente 2 (modelo procedural propio)",
+      "sourceUrl": "repo:tools/models/build/cuenca-fichas.mjs",
+      "notes": "Ficha de humedal con juncos. Low-poly facetado, sin texturas."
+    },
+    {
+      "id": "cuenca_cultivo",
+      "file": "cuenca/cuenca_cultivo.glb",
+      "experience": "cuenca",
+      "tris": 8984,
+      "sizeKB": 196.3,
+      "parts": [],
+      "clips": [],
+      "bounds": {
+        "assembled": {
+          "min": [
+            -0.0558,
+            0,
+            -0.0558
+          ],
+          "max": [
+            0.0558,
+            0.036,
+            0.0558
+          ]
+        },
+        "exploded": {
+          "min": [
+            -0.0558,
+            0,
+            -0.0558
+          ],
+          "max": [
+            0.0558,
+            0.036,
+            0.0558
+          ]
+        }
+      },
+      "license": "own",
+      "author": "Mesa CAUCE — Agente 2 (modelo procedural propio)",
+      "sourceUrl": "repo:tools/models/build/cuenca-fichas.mjs",
+      "notes": "Ficha de cultivo en surcos (café y papa). Low-poly facetado, sin texturas."
+    },
+    {
+      "id": "cuenca_ciudad",
+      "file": "cuenca/cuenca_ciudad.glb",
+      "experience": "cuenca",
+      "tris": 9860,
+      "sizeKB": 129.3,
+      "parts": [],
+      "clips": [],
+      "bounds": {
+        "assembled": {
+          "min": [
+            -0.0558,
+            0,
+            -0.0558
+          ],
+          "max": [
+            0.0558,
+            0.0557,
+            0.0558
+          ]
+        },
+        "exploded": {
+          "min": [
+            -0.0558,
+            0,
+            -0.0558
+          ],
+          "max": [
+            0.0558,
+            0.0557,
+            0.0558
+          ]
+        }
+      },
+      "license": "own",
+      "author": "Mesa CAUCE — Agente 2 (modelo procedural propio)",
+      "sourceUrl": "repo:tools/models/build/cuenca-fichas.mjs",
+      "notes": "Ficha de ciudad. Low-poly facetado, sin texturas."
+    },
+    {
+      "id": "cuenca_industria",
+      "file": "cuenca/cuenca_industria.glb",
+      "experience": "cuenca",
+      "tris": 5416,
+      "sizeKB": 60.7,
+      "parts": [],
+      "clips": [],
+      "bounds": {
+        "assembled": {
+          "min": [
+            -0.0558,
+            0,
+            -0.0558
+          ],
+          "max": [
+            0.0558,
+            0.0695,
+            0.0558
+          ]
+        },
+        "exploded": {
+          "min": [
+            -0.0558,
+            0,
+            -0.0558
+          ],
+          "max": [
+            0.0558,
+            0.0695,
+            0.0558
+          ]
+        }
+      },
+      "license": "own",
+      "author": "Mesa CAUCE — Agente 2 (modelo procedural propio)",
+      "sourceUrl": "repo:tools/models/build/cuenca-fichas.mjs",
+      "notes": "Ficha de industria con chimeneas. Low-poly facetado, sin texturas."
+    },
+    {
+      "id": "cuenca_represa",
+      "file": "cuenca/cuenca_represa.glb",
+      "experience": "cuenca",
+      "tris": 5388,
+      "sizeKB": 89.4,
+      "parts": [],
+      "clips": [],
+      "bounds": {
+        "assembled": {
+          "min": [
+            -0.0558,
+            0,
+            -0.0558
+          ],
+          "max": [
+            0.0558,
+            0.036,
+            0.0558
+          ]
+        },
+        "exploded": {
+          "min": [
+            -0.0558,
+            0,
+            -0.0558
+          ],
+          "max": [
+            0.0558,
+            0.036,
+            0.0558
+          ]
+        }
+      },
+      "license": "own",
+      "author": "Mesa CAUCE — Agente 2 (modelo procedural propio)",
+      "sourceUrl": "repo:tools/models/build/cuenca-fichas.mjs",
+      "notes": "Ficha de represa con embalse. Low-poly facetado, sin texturas."
+    },
+    {
+      "id": "cuenca_ptar",
+      "file": "cuenca/cuenca_ptar.glb",
+      "experience": "cuenca",
+      "tris": 5128,
+      "sizeKB": 77.1,
+      "parts": [],
+      "clips": [
+        {
+          "name": "anim_idle",
+          "duration": 12,
+          "loop": true
+        }
+      ],
+      "bounds": {
+        "assembled": {
+          "min": [
+            -0.0558,
+            0,
+            -0.0558
+          ],
+          "max": [
+            0.0558,
+            0.0222,
+            0.0558
+          ]
+        },
+        "exploded": {
+          "min": [
+            -0.0558,
+            0,
+            -0.0558
+          ],
+          "max": [
+            0.0558,
+            0.0222,
+            0.0558
+          ]
+        }
+      },
+      "license": "own",
+      "author": "Mesa CAUCE — Agente 2 (modelo procedural propio)",
+      "sourceUrl": "repo:tools/models/build/cuenca-fichas.mjs",
+      "notes": "Ficha de PTAR con clarificadores. Low-poly facetado, sin texturas."
+    }
+  ]
+}

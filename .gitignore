@@ -1,0 +1,10 @@
+node_modules/
+dist/
+.wrangler/
+public/vendor/
+test-results/
+playwright-report/
+*.log
+.DS_Store
+.env*
+assets-src/**/*.blend1

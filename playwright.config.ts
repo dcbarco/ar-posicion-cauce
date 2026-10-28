@@ -4,6 +4,8 @@
 import { defineConfig, devices } from '@playwright/test';
 
 const PORT = 5173;
+// E2E_URL=https://localhost:5173 reutiliza un `npm run dev:https` ya abierto (certificado autofirmado).
+const EXTERNAL = process.env.E2E_URL;
 
 export default defineConfig({
   testDir: './tests/e2e',
@@ -16,7 +18,8 @@ export default defineConfig({
   forbidOnly: Boolean(process.env.CI),
   reporter: process.env.CI ? [['list'], ['html', { open: 'never' }]] : 'list',
   use: {
-    baseURL: `http://localhost:${PORT}`,
+    baseURL: EXTERNAL ?? `http://localhost:${PORT}`,
+    ignoreHTTPSErrors: Boolean(EXTERNAL),
     trace: 'retain-on-failure',
     screenshot: 'only-on-failure',
   },
@@ -39,12 +42,14 @@ export default defineConfig({
       },
     },
   ],
-  webServer: {
-    command: 'npm run dev',
-    url: `http://localhost:${PORT}`,
-    reuseExistingServer: true,
-    timeout: 120_000,
-    stdout: 'ignore',
-    stderr: 'pipe',
-  },
+  webServer: EXTERNAL
+    ? undefined
+    : {
+        command: 'npm run dev',
+        url: `http://localhost:${PORT}`,
+        reuseExistingServer: true,
+        timeout: 120_000,
+        stdout: 'ignore',
+        stderr: 'pipe',
+      },
 });

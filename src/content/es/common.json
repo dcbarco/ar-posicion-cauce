@@ -3,6 +3,7 @@
   "home.tip.subtitle": "Elige un cauce y explóralo sobre la mesa: energía, agua o gravedad.",
 
   "home.label.discover": "Qué vas a descubrir",
+  "home.label.soon": "Próximamente",
   "ui.label.close": "Cerrar",
 
   "home.card.taller.title": "Taller de Máquinas",
@@ -21,6 +22,8 @@
   "intro.step2.body": "Apunta al centro del tope y haz coincidir el rectángulo con la luz verde del borde.",
   "intro.step3.title": "Explora",
   "intro.step3.body": "Toca, arrastra y gira. Puedes rodear la mesa: el modelo se queda en su lugar.",
+  "intro.room.step2.title": "Mira la mesa",
+  "intro.room.step2.body": "Apunta la tablet al tope de la mesa y toca donde quieras ubicar el modelo.",
   "intro.label.next": "Siguiente",
   "intro.label.back": "Atrás",
   "intro.label.enter": "Entrar en AR",
@@ -44,6 +47,7 @@
   "place.tip.table": "Toca la mesa para empezar.",
 
   "relocating.tip": "Reubicando… mueve la tablet despacio.",
+  "relocating.tip.room": "Apunta la tablet hacia la mesa.",
   "recalibrate.tip.suggest": "Parece que la mesa se corrió. ¿La ubicamos de nuevo?",
   "recalibrate.label.do": "Ubicar la mesa",
 
@@ -56,6 +60,8 @@
   "hud.label.help": "Ayuda",
   "hud.label.recalibrate": "Recalibrar mesa",
   "hud.label.exit": "Salir",
+  "hud.label.controls_show": "Mostrar controles",
+  "hud.label.controls_hide": "Ocultar controles",
   "hud.label.sound_on": "Activar sonido",
   "hud.label.sound_off": "Silenciar",
 

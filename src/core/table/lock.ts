@@ -24,6 +24,8 @@ export class TableLock {
   readonly pose: LockPose = { position: new THREE.Vector3(), yaw: 0 };
   anchor: XRAnchor | null = null;
   locked = false;
+  /** Corrección de altura acumulada tras el lock (D22), sumada a la pose del ancla. */
+  private heightOffset = 0;
   private readonly lastPos = new THREE.Vector3();
   private hasLast = false;
 
@@ -65,6 +67,7 @@ export class TableLock {
   async confirm(frame: XRFrame | null, refSpace: XRReferenceSpace | null): Promise<void> {
     this.locked = true;
     this.hasLast = false;
+    this.heightOffset = 0;
     this.anchor?.delete();
     this.anchor = null;
     if (!frame || !refSpace || typeof frame.createAnchor !== 'function') return;
@@ -84,6 +87,14 @@ export class TableLock {
     this.anchor?.delete();
     this.anchor = null;
     this.hasLast = false;
+    this.heightOffset = 0;
+  }
+
+  /** Sube (+) o baja (−) el tope sin recalibrar: ARCore afinó su plano después del lock (D22). */
+  adjustHeight(dy: number): void {
+    this.heightOffset += dy;
+    this.pose.position.y += dy;
+    this.applyPose();
   }
 
   /**
@@ -103,6 +114,7 @@ export class TableLock {
     // Normal forzada a +Y: solo se conserva el yaw del ancla.
     _e.setFromQuaternion(_q, 'YXZ');
     this.pose.position.copy(_p);
+    this.pose.position.y += this.heightOffset;
     this.pose.yaw = _e.y;
     this.applyPose();
     return jump;

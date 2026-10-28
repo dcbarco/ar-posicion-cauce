@@ -25,7 +25,7 @@ import { TableLock } from './table/lock';
 import { TableTwin } from './table/occluder';
 import { PlacementCursor, rayToTop } from './placement/placement';
 import { GestureRecognizer, type ScreenGesture } from './gestures/recognizer';
-import { createTrackingHealth, createHeightDriftWatch, TRACKING } from './xr/tracking-health';
+import { createTrackingHealth, createHeightDrift, TRACKING } from './xr/tracking-health';
 import { checkXrSupport, startXrSession, type XrSessionHandle } from './xr/session';
 import { DesktopSim } from './xr/desktop-sim';
 import { createIdleTimer } from './state/idle';
@@ -41,10 +41,17 @@ export interface AppDeps {
   createFx: (r: THREE.WebGLRenderer, s: THREE.Scene) => FxKit;
   audio: AudioKit;
   simulator: boolean;
+  /** Modo sala (?sala=1, D25): la sesión AR y la calibración se conservan entre visitantes. */
+  room: boolean;
 }
+
+const AR_STATES: ReadonlySet<AppSnapshot['state']> = new Set(['scan', 'lock', 'place', 'explore']);
 
 const QUALITY_ORDER: QualityLevel[] = ['high', 'medium', 'low'];
 const SCAN_READY_MS = 600;
+const SCAN_FALLBACK_MS = 6000; // sin superficie detectada en este tiempo: se estima el tope
+const FALLBACK_DROP_M = 0.45; // altura típica de la tablet sobre el tope (ver DesktopSim)
+const SUGGEST_CLEAR_MS = 3000; // todo en orden este tiempo → se retira el aviso de recalibrar
 
 // Temporales reutilizables (cero asignaciones por frame).
 const _ray = new THREE.Ray();
@@ -75,7 +82,7 @@ export class App {
   private readonly loader: AssetLoader;
   private readonly recognizer: GestureRecognizer;
   private readonly health = createTrackingHealth();
-  private readonly drift = createHeightDriftWatch();
+  private readonly drift = createHeightDrift();
   private readonly idle = createIdleTimer();
   private readonly sim: DesktopSim | null;
   private readonly xrCameraFallback = new THREE.PerspectiveCamera();
@@ -86,6 +93,11 @@ export class App {
   private endingXr = false;
   private pendingConfirm = false;
   private scanGoodMs = 0;
+  private scanMs = 0;
+  private driftSuggest = false;
+  private suggestOkMs = 0;
+  /** Altura (mundo) del último plano de mesa visto por el hit-test, o estimada. */
+  private planeY: number | null = null;
   private aimHit = false;
   private readonly aimPoint = new THREE.Vector3();
   private pointerScreen = { x: innerWidth / 2, y: innerHeight / 2 };
@@ -106,6 +118,11 @@ export class App {
   private fpsAccum = 0;
   private lowFpsSeconds = 0;
   private wakeLock: WakeLockSentinel | null = null;
+  // Contadores para el panel de diagnóstico (?diag=1).
+  private diagFrames = 0;
+  private diagXrFrames = 0;
+  private diagHits = 0;
+  private diagViewer = false;
 
   constructor(private readonly deps: AppDeps) {
     this.snap = {
@@ -124,6 +141,9 @@ export class App {
       simulator: deps.simulator,
       operatorReason: null,
       quality: 'high',
+      room: deps.room,
+      xrActive: false,
+      tableReady: false,
     };
 
     this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: 'high-performance' });
@@ -276,7 +296,12 @@ export class App {
         if (this.snap.state === 'lock' && this.snap.lockPhase === 'adjust') this.pendingConfirm = true;
         break;
       case 'recalibrate':
-        this.beginLock();
+        if (this.snap.state !== 'home') this.beginLock();
+        // Modo sala: gesto oculto del operador en HOME (calibrar sin elegir experiencia).
+        else if (this.deps.room) {
+          if (this.xr) this.beginLock();
+          else void this.enterAr(true);
+        }
         break;
       case 'reset':
         if (!this.exp) break;
@@ -413,9 +438,12 @@ export class App {
 
   // ───────────────────────────── XR / simulador ─────────────────────────────
 
-  private async enterAr(): Promise<void> {
-    if (this.snap.state !== 'intro') return;
+  /** `calibrateOnly`: modo sala, el operador calibra desde HOME sin experiencia cargada. */
+  private async enterAr(calibrateOnly = false): Promise<void> {
+    if (this.snap.state !== (calibrateOnly ? 'home' : 'intro')) return;
+    if (this.xr) return this.resumeAr(); // modo sala: la sesión siguió abierta en HOME
     if (this.sim) {
+      if (calibrateOnly) return;
       // D15: en el simulador el Table Lock se da por hecho (marco = origen).
       this.lock.pose.position.set(0, 0, 0);
       this.lock.pose.yaw = 0;
@@ -441,9 +469,27 @@ export class App {
     void this.requestWakeLock();
     this.health.reset();
     this.scanGoodMs = 0;
+    this.scanMs = 0;
+    this.planeY = null;
     this.lock.unlock();
     this.twin.edge.setMode('hidden');
-    this.setState({ state: 'scan' });
+    this.setState({ state: 'scan', xrActive: true, tableReady: false });
+  }
+
+  /** Modo sala: el visitante entra a una sesión que ya estaba abierta (con la mesa calibrada si la hay). */
+  private resumeAr(): void {
+    // El tracking perdido mientras la tablet descansaba en el soporte no cuenta para este visitante.
+    this.health.reset();
+    this.drift.reset();
+    const patch = { relocating: false, suggestRecalibrate: false };
+    if (this.snap.state === 'home') return this.beginLock(); // calibración del operador
+    if (this.lock.locked) {
+      this.twin.edge.setMode('rest');
+      return this.setState({ ...patch, state: 'place' });
+    }
+    this.scanGoodMs = 0;
+    this.scanMs = 0;
+    this.setState({ ...patch, state: 'scan' });
   }
 
   private beginLock(): void {
@@ -451,25 +497,29 @@ export class App {
     this.lock.unlock();
     this.drift.reset();
     this.twin.edge.setMode('hidden');
-    this.setState({ state: 'lock', lockPhase: 'aim', suggestRecalibrate: false, switcherOpen: false });
+    this.setState({ state: 'lock', lockPhase: 'aim', suggestRecalibrate: false, switcherOpen: false, tableReady: false });
   }
 
   private async goHome(): Promise<void> {
+    // Modo sala: la sesión AR y la calibración quedan para el próximo visitante (D25).
+    const keep = this.deps.room && this.xr !== null;
     ++this.expToken;
     this.unloadExperience();
-    this.lock.unlock();
+    if (!keep || !this.lock.locked) this.lock.unlock();
     this.health.reset();
     this.drift.reset();
     this.idle.reset();
     this.pendingConfirm = false;
     this.twin.edge.setMode(this.sim ? 'rest' : 'hidden');
     this.lockReticle.setState('hidden');
-    if (this.xr) {
+    if (this.xr && !keep) {
       this.endingXr = true;
       await this.xr.end();
       this.xr = null;
     }
     this.setState({
+      xrActive: this.xr !== null,
+      tableReady: keep && this.lock.locked,
       state: 'home',
       experience: null,
       loadProgress: 0,
@@ -513,12 +563,17 @@ export class App {
   // ───────────────────────────── bucle por frame ─────────────────────────────
 
   private onFrame(time: number, frame?: XRFrame): void {
-    const dtMs = this.lastTime ? Math.min(100, time - this.lastTime) : 16;
+    // Al entrar o salir de la sesión XR cambia la base de tiempo (los frames de WebXR traen su propio
+    // reloj): el salto puede ser negativo y enorme. Un dt negativo hacía que damp() diera Infinity y
+    // luego NaN en las opacidades, y retícula, borde y modelo quedaban dibujándose invisibles.
+    const raw = time - this.lastTime;
+    const dtMs = this.lastTime && raw > 0 && Number.isFinite(raw) ? Math.min(100, raw) : 16;
     this.lastTime = time;
     const dt = dtMs / 1000;
     this.elapsed += dt;
     this.measureFps(dtMs);
 
+    this.diagFrames++;
     let good = true;
     if (this.xr && frame) good = this.updateXr(frame, dtMs);
     else if (this.sim) {
@@ -526,9 +581,13 @@ export class App {
       good = !this.sim.trackingLost;
     }
 
-    if (this.lock.locked || this.sim) {
+    // Solo con la mesa en uso: en modo sala, en HOME la tablet descansa en el soporte mirando al pedestal.
+    if ((this.lock.locked || this.sim) && AR_STATES.has(this.snap.state)) {
       if (this.health.sample(good, dtMs)) this.setState({ relocating: this.health.lost });
       if (this.health.lost && this.health.lostForMs > TRACKING.recalibrateAfterMs) this.setState({ suggestRecalibrate: true });
+      // El aviso se retira solo si el tracking volvió y la altura cuadra durante un rato (el ancla se recuperó).
+      this.suggestOkMs = this.snap.suggestRecalibrate && !this.health.lost && !this.driftSuggest ? this.suggestOkMs + dtMs : 0;
+      if (this.suggestOkMs > SUGGEST_CLEAR_MS) this.setState({ suggestRecalibrate: false });
     }
 
     if (this.snap.state === 'place') this.updatePlaceCursor(dt);
@@ -551,21 +610,44 @@ export class App {
     const xr = this.xr!;
     const viewer = frame.getViewerPose(xr.refSpace);
     let hit: XRHitTestResult | undefined;
-    if (xr.hitTestSource) hit = frame.getHitTestResults(xr.hitTestSource)[0];
+    let results: readonly XRHitTestResult[] | null = null;
+    if (xr.hitTestSource) {
+      results = frame.getHitTestResults(xr.hitTestSource);
+      this.diagHits = results.length;
+      hit = results[0];
+    }
+    this.diagXrFrames++;
+    this.diagViewer = !!viewer;
     this.aimHit = false;
+    let realHit = false;
     if (hit) {
       const pose = hit.getPose(xr.refSpace);
       if (pose) {
         _hitMatrix.fromArray(pose.transform.matrix);
         _hitPos.setFromMatrixPosition(_hitMatrix);
-        this.aimHit = true;
+        this.aimHit = realHit = true;
+        this.planeY = _hitPos.y;
       }
+    }
+    // Sin hit este frame (un tope blanco y liso hace parpadear la detección de ARCore): se apunta al
+    // último plano conocido con el rayo del centro de la pantalla, para que la retícula no desaparezca.
+    if (!realHit && this.planeY !== null && !this.lock.locked) {
+      const r = this.screenRayWorld(innerWidth / 2, innerHeight / 2);
+      _worldPlane.set(_v2.set(0, 1, 0), -this.planeY);
+      if (r?.intersectPlane(_worldPlane, _hitPos)) this.aimHit = true;
     }
 
     switch (this.snap.state) {
       case 'scan':
-        this.scanGoodMs = viewer && this.aimHit ? this.scanGoodMs + dtMs : 0;
-        if (this.scanGoodMs > SCAN_READY_MS) this.beginLock();
+        this.scanMs += dtMs;
+        // Los fallos sueltos solo restan: no reinician el escaneo.
+        this.scanGoodMs = realHit ? this.scanGoodMs + dtMs : Math.max(0, this.scanGoodMs - dtMs / 2);
+        if (this.scanMs > SCAN_FALLBACK_MS && this.planeY === null && viewer) {
+          // ARCore no encontró la mesa: se estima su tope bajo la tablet; el visitante lo ajusta luego.
+          this.planeY = viewer.transform.position.y - FALLBACK_DROP_M;
+          console.warn('[xr] sin superficie detectada: tope estimado bajo la tablet');
+        }
+        if (this.scanGoodMs > SCAN_READY_MS || (this.planeY !== null && this.scanMs > SCAN_FALLBACK_MS)) this.beginLock();
         break;
       case 'lock':
         if (this.snap.lockPhase === 'aim') {
@@ -583,13 +665,23 @@ export class App {
 
     if (!this.lock.locked) return !!viewer;
     const jump = this.lock.updateFromAnchor(frame, xr.refSpace);
-    // Deriva de altura: hit-test dentro del rectángulo de la mesa vs plano bloqueado.
-    if (this.aimHit) {
-      _v.copy(_hitPos);
-      this.tableFrame.worldToLocal(_v);
-      const inside = Math.abs(_v.x) < TABLE.length / 2 && Math.abs(_v.z) < TABLE.width / 2;
-      if (this.drift.sample(inside ? _v.y : null, dtMs) && !this.snap.suggestRecalibrate) this.setState({ suggestRecalibrate: true });
+    // Deriva de altura (D22): de los resultados del hit-test que caen dentro del rectángulo de la mesa,
+    // el más cercano al tope (los demás suelen ser el piso u otro plano). Lo pequeño se corrige solo.
+    let diff: number | null = null;
+    if (results && results.length && AR_STATES.has(this.snap.state)) {
+      this.tableFrame.updateMatrixWorld();
+      for (let i = 0; i < results.length; i++) {
+        const p = results[i]!.getPose(xr.refSpace)?.transform.position;
+        if (!p) continue;
+        this.tableFrame.worldToLocal(_v.set(p.x, p.y, p.z));
+        const inside = Math.abs(_v.x) < TABLE.length / 2 && Math.abs(_v.z) < TABLE.width / 2;
+        if (inside && (diff === null || Math.abs(_v.y) < Math.abs(diff))) diff = _v.y;
+      }
     }
+    const d = this.drift.sample(diff, dtMs);
+    if (d.correctM !== 0) this.lock.adjustHeight(d.correctM);
+    this.driftSuggest = d.suggest;
+    if (d.suggest && !this.snap.suggestRecalibrate) this.setState({ suggestRecalibrate: true });
     return !!viewer && jump !== null && jump < TRACKING.jumpMeters;
   }
 
@@ -599,7 +691,8 @@ export class App {
     this.drift.reset();
     this.twin.edge.setMode('lock');
     void this.twin.edge.sweep(); // termina en 'rest' (P-010.6); el sonido lo pone la UI (P-010.4)
-    this.setState({ state: this.placed ? 'explore' : 'place', suggestRecalibrate: false });
+    // Sin experiencia (calibración del operador en modo sala) se vuelve a HOME con la mesa lista.
+    this.setState({ state: this.placed ? 'explore' : this.snap.experience ? 'place' : 'home', suggestRecalibrate: false, tableReady: this.deps.room });
   }
 
   private updatePlaceCursor(dt: number): void {
@@ -799,6 +892,65 @@ export class App {
 
   // ───────────────────────────── utilidades ─────────────────────────────
 
+  /** Foto del estado interno para el panel de diagnóstico (?diag=1). No se llama por frame. */
+  diagnostics(): Record<string, string> {
+    const f = (v: THREE.Vector3) => `${v.x.toFixed(2)} ${v.y.toFixed(2)} ${v.z.toFixed(2)}`;
+    const vis = (o: THREE.Object3D | null | undefined) => {
+      if (!o) return 'null';
+      let chain = true;
+      for (let p: THREE.Object3D | null = o; p; p = p.parent) chain &&= p.visible;
+      o.getWorldPosition(_v);
+      return `${o.visible ? 'vis' : 'oculto'}${chain ? '' : ' (padre oculto)'} ${o.parent ? '' : 'SIN PADRE '}@ ${f(_v)}`;
+    };
+    const cam = this.activeCamera();
+    cam.getWorldPosition(_v2);
+    const camPos = f(_v2);
+    const session = this.xr?.session as (XRSession & { enabledFeatures?: string[] }) | undefined;
+    const info = this.renderer.info.render;
+    let meshes = 0;
+    this.expRoot?.traverse((o) => {
+      if ((o as THREE.Mesh).isMesh) meshes++;
+    });
+    const s = this.snap;
+    // Opacidad real de lo que se dibuja: NaN o 0 con "vis" = se dibuja invisible.
+    const op = (o: THREE.Object3D) => {
+      let v = -1;
+      o.traverse((c) => {
+        const m = (c as THREE.Mesh).material as (THREE.Material & { uniforms?: Record<string, { value: unknown }> }) | undefined;
+        if (!m) return;
+        const u = m.uniforms?.uOpacity?.value;
+        v = Math.max(v, typeof u === 'number' ? u : m.opacity); // Math.max propaga NaN
+      });
+      return Number.isNaN(v) ? 'NaN' : v.toFixed(2);
+    };
+    const layer = this.renderer.xr.getBaseLayer() as (XRWebGLLayer & { textureWidth?: number }) | null;
+    const layerInfo = !layer
+      ? '-'
+      : typeof XRWebGLLayer !== 'undefined' && layer instanceof XRWebGLLayer
+        ? `XRWebGLLayer ${layer.framebufferWidth}x${layer.framebufferHeight}`
+        : `XRProjectionLayer ${layer.textureWidth ?? '?'}`;
+    const chrome = /Chrome\/([\d.]+)/.exec(navigator.userAgent)?.[1] ?? navigator.userAgent.slice(0, 40);
+    const out: Record<string, string> = {
+      estado: `${s.state} lock=${s.lockPhase} retícula=${s.reticle} carga=${Math.round(s.loadProgress * 100)}% exp=${s.experience ?? '-'}`,
+      frames: `total=${this.diagFrames} xr=${this.diagXrFrames} presentando=${this.renderer.xr.isPresenting} viewer=${this.diagViewer}`,
+      hitTest: `fuente=${!!this.xr?.hitTestSource} resultados=${this.diagHits} aimHit=${this.aimHit} @ ${f(_hitPos)}`,
+      escaneo: `${(this.scanMs / 1000).toFixed(1)} s, bueno=${Math.round(this.scanGoodMs)} ms, planoY=${this.planeY?.toFixed(2) ?? '-'}`,
+      sesion: session ? `${session.visibilityState} blend=${session.environmentBlendMode ?? '?'} feats=${session.enabledFeatures?.join(',') ?? '?'}` : 'sin sesión XR',
+      camara: `${camPos} near=${(cam as THREE.PerspectiveCamera).near ?? '?'} far=${(cam as THREE.PerspectiveCamera).far ?? '?'}`,
+      mesa: `locked=${this.lock.locked} ancla=${!!this.lock.anchor} yaw=${THREE.MathUtils.radToDeg(this.lock.pose.yaw).toFixed(0)}° ${vis(this.tableFrame)}`,
+      retLock: vis(this.lockReticle.object),
+      retColoc: vis(this.reticle.object),
+      borde: vis(this.twin.edge.object),
+      modelo: `${vis(this.expRoot)} mallas=${meshes} colocado=${this.placed}`,
+      tracking: `perdido=${this.health.lost} calidad=${s.quality}`,
+      opacidad: `retLock=${op(this.lockReticle.object)} retColoc=${op(this.reticle.object)} borde=${op(this.twin.edge.object)}`,
+      render: `calls=${info.calls} tris=${info.triangles} contexto=${this.renderer.getContext().isContextLost() ? 'PERDIDO' : 'ok'}`,
+      capa: `${layerInfo} chrome=${chrome}`,
+      pantalla: `${innerWidth}x${innerHeight} fullscreen=${!!document.fullscreenElement} AR desde fullscreen=${this.xr?.fromFullscreen ?? '-'}`,
+    };
+    return out;
+  }
+
   private project(target: THREE.Object3D, out: { x: number; y: number; visible: boolean }) {
     const cam = this.activeCamera();
     target.getWorldPosition(_v2);
@@ -833,7 +985,7 @@ export function showFatal(host: HTMLElement, t: Translate): void {
   box.id = 'fatal';
   box.setAttribute('role', 'alertdialog');
   box.style.cssText =
-    'position:fixed;inset:0;display:grid;place-content:center;gap:16px;text-align:center;padding:24px;background:#0E3A43;color:#F5F2EB;font:20px/1.4 system-ui,sans-serif;z-index:1000;pointer-events:auto';
+    'position:fixed;inset:0;display:grid;place-content:center;gap:16px;text-align:center;padding:24px;background:#FAF6DC;color:#3A2418;font:20px/1.4 system-ui,sans-serif;z-index:1000;pointer-events:auto';
   const h = document.createElement('h1');
   h.style.cssText = 'font-size:28px;margin:0';
   h.textContent = t('error.title');
@@ -842,7 +994,7 @@ export function showFatal(host: HTMLElement, t: Translate): void {
   p.textContent = t('error.body.generic');
   const b = document.createElement('button');
   b.textContent = t('error.label.restart');
-  b.style.cssText = 'justify-self:center;min-height:56px;padding:0 28px;border:0;border-radius:28px;background:#41B270;color:#0E3A43;font:600 20px system-ui,sans-serif';
+  b.style.cssText = 'justify-self:center;min-height:56px;padding:0 28px;border:0;border-radius:28px;background:#B44E1C;color:#FAF6DC;font:600 20px system-ui,sans-serif';
   b.addEventListener('click', () => location.reload());
   b.addEventListener('beforexrselect', (e) => e.preventDefault());
   box.append(h, p, b);

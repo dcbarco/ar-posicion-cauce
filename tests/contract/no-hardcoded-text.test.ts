@@ -11,6 +11,7 @@ const ALLOW: Record<string, string> = {};
 /** Archivos completos fuera de la regla (solo herramientas de desarrollo que el visitante no ve). */
 const ALLOW_FILES: Record<string, string> = {
   'src/ui/playground.ts': 'D18: página de componentes ?ui=1, solo para el equipo (título y contador de draw calls de depuración)',
+  'src/core/diag.ts': 'panel de diagnóstico ?diag=1, solo para el equipo (estado interno y consola)',
 };
 
 /** ¿El literal contiene texto legible (≥ 2 letras seguidas) fuera de ${…} y de etiquetas/atributos HTML? */

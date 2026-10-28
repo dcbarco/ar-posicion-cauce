@@ -74,7 +74,9 @@ export function createModalHost(ctx: UiCtx, layer: HTMLElement) {
 }
 
 // ───────────── toasts ─────────────
-const TOAST_MS = 3200;
+const TOAST_MS = 3200; // mínimo
+const TOAST_BASE_MS = 1500;
+const TOAST_MS_PER_CHAR = 55; // ≈ 90 caracteres → 6,5 s
 const TOAST_MAX = 3;
 
 export function createToastHost(ctx: UiCtx, layer: HTMLElement) {
@@ -87,7 +89,9 @@ export function createToastHost(ctx: UiCtx, layer: HTMLElement) {
     const el = h('div', `cx-toast cx-toast--${tone}`, [h('span', 'cx-toast__ico', [icon(ico)]), h('span', 'cx-toast__text', [ctx.t(p.key, p.vars)])]);
     stack.append(enter(el, 'down'));
     while (stack.children.length > TOAST_MAX) stack.firstElementChild?.remove();
-    setTimeout(() => leave(el, 'up'), TOAST_MS);
+    // Los textos largos (hasta 90 caracteres) necesitan más tiempo en pantalla para leerse.
+    const ms = Math.max(TOAST_MS, TOAST_BASE_MS + (el.textContent?.length ?? 0) * TOAST_MS_PER_CHAR);
+    setTimeout(() => leave(el, 'up'), ms);
   };
   const off = ctx.events.on('toast', show);
   return {
@@ -148,8 +152,18 @@ export function createContextMenuHost(ctx: UiCtx, layer: HTMLElement) {
 }
 
 // ───────────── ficha flotante anclada ─────────────
+// La ficha flota a un costado de la pieza (no encima) y una línea guía une el punto del ancla con
+// el borde más cercano de la ficha: así la pieza tocada queda siempre a la vista.
+const LABEL_GAP = 56; // px entre el ancla y el borde de la ficha
+const LABEL_PAD = 16; // px a los bordes de la pantalla
+const LABEL_TOP = 88; // px reservados arriba (botón de salir e indicación)
+const LABEL_FLIP = 0.1; // histéresis (fracción del ancho) para no saltar de lado cerca del centro
+
 export function createFloatingLabelHost(ctx: UiCtx, layer: HTMLElement) {
   let card: HTMLElement | null = null;
+  let box: HTMLElement | null = null;
+  let line: HTMLElement | null = null;
+  let tail: HTMLElement | null = null;
   let anchor: THREE.Object3D | null = null;
   let id = '';
   const out = { x: 0, y: 0, visible: false };
@@ -159,15 +173,18 @@ export function createFloatingLabelHost(ctx: UiCtx, layer: HTMLElement) {
   let cw = 0;
   let ch = 0;
   let W = 0;
+  let H = 0;
+  let right = true; // la ficha va a la derecha del ancla
   const onResize = () => {
     W = layer.clientWidth;
+    H = layer.clientHeight;
     lx = -1e6;
   };
   window.addEventListener('resize', onResize);
 
   const hide = () => {
     if (card) leave(card, 'fade');
-    card = null;
+    card = box = line = tail = null;
     anchor = null;
   };
   const show = (p: AppEvents['label:show']) => {
@@ -190,34 +207,44 @@ export function createFloatingLabelHost(ctx: UiCtx, layer: HTMLElement) {
         ),
       );
     }
-    const wrap = h('div', 'cx-label', [enter(inner, 'pop'), h('span', 'cx-label__tail')]);
+    // La caja lleva la posición (transform por frame); la tarjeta interior, la animación de entrada.
+    box = h('div', 'cx-label__box', [enter(inner, 'pop')]);
+    line = h('span', 'cx-label__line');
+    tail = h('span', 'cx-label__tail');
+    const wrap = h('div', 'cx-label', [line, tail, box]);
     layer.append(wrap);
     card = wrap;
     cw = inner.offsetWidth;
     ch = inner.offsetHeight;
     W = layer.clientWidth;
+    H = layer.clientHeight;
     lx = ly = -1e6;
     lv = null;
     tick();
   };
   const tick = () => {
-    if (!card || !anchor) return;
+    if (!card || !box || !line || !tail || !anchor) return;
     ctx.api.project(anchor, out);
     if (out.visible !== lv) {
       lv = out.visible;
       card.classList.toggle('is-hidden', !out.visible);
     }
     if (!out.visible) return;
-    // Mantener la tarjeta dentro de la pantalla; la cola apunta al ancla.
-    const pad = 16;
-    const x = Math.min(W - cw / 2 - pad, Math.max(cw / 2 + pad, out.x));
-    const y = Math.max(ch + 28 + pad, out.y);
-    if (Math.abs(x - lx) < 0.5 && Math.abs(y - ly) < 0.5) return;
-    lx = x;
-    ly = y;
-    card.style.transform = `translate3d(${x}px, ${y}px, 0)`;
-    const tail = card.lastElementChild as HTMLElement | null;
-    if (tail) tail.style.transform = `translateX(${Math.max(-cw / 2 + 24, Math.min(cw / 2 - 24, out.x - x))}px)`;
+    if (Math.abs(out.x - lx) < 0.5 && Math.abs(out.y - ly) < 0.5) return;
+    lx = out.x;
+    ly = out.y;
+    // Lado: el que tenga más pantalla libre, con histéresis cerca del centro.
+    if (right && out.x > W * (0.5 + LABEL_FLIP)) right = false;
+    else if (!right && out.x < W * (0.5 - LABEL_FLIP)) right = true;
+    const x = Math.min(W - cw - LABEL_PAD, Math.max(LABEL_PAD, right ? out.x + LABEL_GAP : out.x - LABEL_GAP - cw));
+    const y = Math.min(H - ch - LABEL_PAD, Math.max(LABEL_TOP, out.y - ch / 2));
+    box.style.transform = `translate3d(${x}px, ${y}px, 0)`;
+    tail.style.transform = `translate3d(${out.x}px, ${out.y}px, 0)`;
+    // Línea guía: del ancla al punto más cercano del borde de la ficha.
+    const dx = Math.min(x + cw, Math.max(x, out.x)) - out.x;
+    const dy = Math.min(y + ch, Math.max(y, out.y)) - out.y;
+    line.style.width = `${Math.hypot(dx, dy)}px`;
+    line.style.transform = `translate3d(${out.x}px, ${out.y}px, 0) rotate(${Math.atan2(dy, dx)}rad)`;
   };
   const off = ctx.events.on('label:show', show);
   return {

@@ -1,33 +1,56 @@
 /* src/ui/tokens.css — tokens de diseño de Mesa CAUCE (Agente 3).
- * Fuente: sección 9 del brief. Todo el CSS de la UI usa estas variables; no hay colores sueltos.
- * Contraste: los paneles son ≥ 82 % opacos para garantizar ≥ 4,5:1 con --cx-text sobre el video
- * de la cámara (en DOM Overlay el desenfoque no siempre alcanza al video). */
+ * Fuente: sección 9 del brief y paleta CAUCE (D24). Todo el CSS de la UI usa estas variables.
+ * Tema claro: paneles crema ≥ 94 % opacos con texto café, para garantizar ≥ 4,5:1 sobre el video de
+ * la cámara (en DOM Overlay el desenfoque no siempre alcanza al video).
+ * Contrastes medidos (WCAG): café #6E432D / crema 7,7 · café oscuro / crema 13,3 · crema / naranja
+ * profundo 4,8 · café oscuro / amarillo 9,0. El naranja de marca sobre crema da 3,45: solo para
+ * gráficos, bordes y texto grande en negrita; para texto normal se usa el naranja profundo. */
 :root {
-  /* Identidad */
-  --cx-accent: #41b270; /* luz LED del borde de la mesa */
-  --cx-accent-hi: #6fd498; /* brillo / cabeza de las líneas de luz */
-  --cx-accent-ink: #062619; /* texto sobre acento (contraste ≈ 6:1) */
-  --cx-accent-soft: rgba(65, 178, 112, 0.22);
-  --cx-accent-line: rgba(65, 178, 112, 0.55);
-  --cx-panel-solid: #0e3a43; /* verde azulado de la señalética */
-  --cx-panel: rgba(14, 58, 67, 0.86);
-  --cx-panel-strong: rgba(9, 40, 47, 0.94);
-  --cx-panel-deep: #072227;
-  --cx-panel-border: rgba(245, 242, 235, 0.16);
-  --cx-text: #f5f2eb;
-  --cx-text-dim: rgba(245, 242, 235, 0.82);
-  --cx-warn: #f2b134; /* alerta ámbar */
-  --cx-warn-ink: #2b1d00;
-  --cx-scrim: rgba(4, 22, 26, 0.62);
+  /* Paleta CAUCE */
+  --cx-orange: #d3632b; /* 211, 99, 43 — marca */
+  --cx-orange-deep: #b44e1c; /* derivado: rellenos con texto crema (4,8:1) */
+  --cx-brown: #6e432d; /* 110, 67, 45 */
+  --cx-brown-deep: #3a2418; /* derivado: texto principal */
+  --cx-yellow: #f2c744; /* 242, 199, 68 */
+  --cx-teal: #2c8190; /* 44, 129, 144 */
+  --cx-teal-deep: #1e626e; /* derivado: teal con texto crema (6,4:1) */
+  --cx-cream: #faf6dc; /* 250, 246, 220 */
 
-  /* Tipografía (Lexend Variable empaquetada; ver src/ui/index.ts) */
-  --cx-font: 'Lexend Variable', 'Lexend', system-ui, sans-serif;
-  --cx-fs-body: 18px; /* mínimo absoluto de la UI */
-  --cx-fs-lead: 20px;
-  --cx-fs-title: 26px; /* títulos ≥ 24 px */
-  --cx-fs-display: 40px;
-  --cx-fs-number: 32px;
-  --cx-lh: 1.35;
+  /* Identidad (nombres semánticos que usa ui.css) */
+  --cx-accent: var(--cx-orange); /* gráficos, barras, bordes, íconos grandes */
+  --cx-accent-fill: var(--cx-orange-deep); /* botones y fichas con texto */
+  --cx-accent-hi: var(--cx-orange-deep); /* texto en acento sobre crema (valores, etiquetas) */
+  --cx-accent-ink: var(--cx-cream); /* texto sobre --cx-accent-fill */
+  --cx-accent-soft: rgba(211, 99, 43, 0.14);
+  --cx-accent-line: rgba(211, 99, 43, 0.45);
+  --cx-info: var(--cx-teal);
+  --cx-info-deep: var(--cx-teal-deep);
+  --cx-panel-solid: var(--cx-cream);
+  --cx-panel: rgba(250, 246, 220, 0.94);
+  --cx-panel-strong: rgba(250, 246, 220, 0.97);
+  --cx-surface: #fffcef; /* tarjetas y perillas: un punto más claro que el crema */
+  --cx-panel-border: rgba(110, 67, 45, 0.18);
+  --cx-track: rgba(110, 67, 45, 0.16); /* pistas de sliders, barras vacías */
+  --cx-fill-subtle: rgba(110, 67, 45, 0.06); /* fondos de fila / interruptor */
+  --cx-text: var(--cx-brown-deep);
+  --cx-text-dim: var(--cx-brown);
+  --cx-warn: var(--cx-yellow); /* alerta */
+  --cx-warn-ink: var(--cx-brown-deep);
+  --cx-scrim: rgba(58, 36, 24, 0.5);
+  --cx-scrim-blur: blur(10px) saturate(0.8); /* aparta lo de atrás para que el diálogo resalte */
+  --cx-screen-bg: radial-gradient(80% 70% at 100% 0%, rgba(211, 99, 43, 0.16), transparent 60%),
+    radial-gradient(70% 60% at 0% 100%, rgba(242, 199, 68, 0.2), transparent 60%), var(--cx-cream);
+
+  /* Tipografía (D21; empaquetadas, ver src/ui/index.ts): principal Space Grotesk para títulos, botones,
+   * etiquetas y números; secundaria Plus Jakarta Sans para los textos de lectura (párrafos, avisos). */
+  --cx-font: 'Space Grotesk Variable', 'Space Grotesk', system-ui, sans-serif;
+  --cx-font-text: 'Plus Jakarta Sans Variable', 'Plus Jakarta Sans', system-ui, sans-serif;
+  --cx-fs-body: 16px; /* mínimo de la UI (D21: el brief pedía 18 px) */
+  --cx-fs-lead: 17px;
+  --cx-fs-title: 22px;
+  --cx-fs-display: 34px;
+  --cx-fs-number: 28px;
+  --cx-lh: 1.4;
 
   /* Espacios: separación entre objetivos táctiles ≥ 12 px */
   --cx-s1: 4px;
@@ -52,9 +75,9 @@
   --cx-r-pill: 999px;
 
   /* Sombras y desenfoque */
-  --cx-shadow: 0 10px 28px rgba(0, 0, 0, 0.38);
-  --cx-shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.3);
-  --cx-glow: 0 0 0 2px var(--cx-accent), 0 0 18px rgba(65, 178, 112, 0.55);
+  --cx-shadow: 0 10px 28px rgba(58, 36, 24, 0.22);
+  --cx-shadow-sm: 0 4px 12px rgba(58, 36, 24, 0.18);
+  --cx-glow: 0 0 0 2px var(--cx-accent), 0 0 18px rgba(211, 99, 43, 0.45);
   --cx-blur: blur(14px) saturate(1.2);
 
   /* Movimiento: 250–600 ms, ease-out, solo transform/opacity */

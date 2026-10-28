@@ -49,6 +49,7 @@ const P: Record<string, string> = {
   tree: '<path d="M12 21v-5M12 3l6 8h-3l4 5H5l4-5H6z"/>',
   gear: '<circle cx="12" cy="12" r="3"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M5.3 18.7l2.1-2.1M16.6 7.4l2.1-2.1"/>',
   bolt: '<path d="M13 2.5L5 13.5h6l-1 8 8-11h-6z"/>',
+  sliders: '<path d="M4 7h9M17 7h3M4 17h3M11 17h9"/><circle cx="15" cy="7" r="2"/><circle cx="9" cy="17" r="2"/>',
 };
 
 const NS = 'http://www.w3.org/2000/svg';

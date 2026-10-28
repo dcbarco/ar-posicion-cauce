@@ -9,6 +9,7 @@ const K = 'exp.taller';
 const C = `${K}.controls.label`;
 const EXPLODE_S = 0.7; // duración de cada pieza al separarse/juntarse
 const PHASES = 4;
+const STROKE_TIP_MIN_S = 5; // un tiempo debe durar al menos esto para que su explicación se alcance a leer
 
 type HelpLevel = 'none' | 'next' | 'all';
 type Mode = 'explore' | 'assemble';
@@ -62,6 +63,7 @@ export function createTaller(): Experience {
   let help: HelpLevel = 'none';
   let selected: PartState | null = null;
   let phase = 0;
+  let slowmoHinted = false;
 
   // Visuales propios
   let guides: THREE.LineSegments;
@@ -236,7 +238,20 @@ export function createTaller(): Experience {
     const n = Math.min(PHASES, Math.floor((clipT / action.getClip().duration) * PHASES) + 1);
     if (n !== phase) {
       phase = n;
-      if (playing && speed <= 1.01) ctx.events.emit('toast', { key: `${K}.${model.id}.tip.stroke${n}`, tone: 'info' });
+      if (playing) narrateStroke(n);
+    }
+  };
+
+  // A velocidad normal cada tiempo dura ~2 s: su explicación no alcanza a leerse y los avisos se
+  // apilan. Solo se narra cuando el tiempo dura lo suficiente; si no, se sugiere una vez la cámara lenta.
+  const narrateStroke = (n: number) => {
+    if (!action) return;
+    const strokeS = action.getClip().duration / PHASES / Math.max(speed, 0.01);
+    if (strokeS >= STROKE_TIP_MIN_S) {
+      ctx.events.emit('toast', { key: `${K}.${model.id}.tip.stroke${n}`, tone: 'info' });
+    } else if (!slowmoHinted) {
+      slowmoHinted = true;
+      ctx.events.emit('toast', { key: `${K}.${model.id}.tip.slowmo`, tone: 'info' });
     }
   };
 
@@ -650,6 +665,7 @@ export function createTaller(): Experience {
       updateFlow();
       help = 'none';
       phase = 0;
+      slowmoHinted = false;
       changed();
     },
 

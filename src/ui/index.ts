@@ -1,14 +1,20 @@
 // UI de Mesa CAUCE (Agente 3). Se monta dentro del DOM Overlay, encima de la capa de gestos
 // (#gesture-layer, del Agente 1). Contenedores con pointer-events:none: solo los objetivos táctiles
 // (`.cx-hit`) capturan toques; el resto pasa a la capa de gestos.
-import '@fontsource-variable/lexend/wght.css';
+import '@fontsource-variable/space-grotesk/wght.css';
+import '@fontsource-variable/plus-jakarta-sans/wght.css';
 import './tokens.css';
 import './ui.css';
-import type { AppSnapshot, UiApi, UiModule } from '../core/contracts';
+import type { AppSnapshot, AppState, UiApi, UiModule } from '../core/contracts';
+import { installBackGuard } from './back';
 import { createControlsPanel } from './controls';
 import { h, makeCtx } from './dom';
+import { installFullscreenGesture } from './fullscreen';
 import { createContextMenuHost, createFloatingLabelHost, createModalHost, createToastHost } from './overlays';
 import { createScreens, type Layers } from './screens';
+
+// Estados con sesión AR activa: ahí el navegador ya está a pantalla completa.
+const NO_FULLSCREEN: ReadonlySet<AppState> = new Set(['scan', 'lock', 'place', 'explore']);
 
 export function createUi(): UiModule {
   let root: HTMLElement | null = null;
@@ -65,11 +71,16 @@ export function createUi(): UiModule {
       const offControls = api.events.on('controls:changed', () => {
         if (screens.exploring()) controls.set(api.getControls());
       });
+      // Con la sesión AR abierta (también en HOME en modo sala) la pantalla completa chocaría con el DOM Overlay.
+      const offFullscreen = installFullscreenGesture(() => !NO_FULLSCREEN.has(api.getState().state) && !api.getState().xrActive);
+      const offBack = installBackGuard(api, ctx.act);
 
       tickers = [(dt) => controls.tick(dt), () => label.tick()];
       disposers = [
         offState,
         offControls,
+        offFullscreen,
+        offBack,
         () => root?.removeEventListener('beforexrselect', onBeforeXrSelect),
         () => root?.removeEventListener('pointerdown', onDown, { capture: true }),
         () => screens.dispose(),

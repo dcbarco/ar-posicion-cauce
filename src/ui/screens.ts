@@ -3,7 +3,7 @@
 // Se reconcilia por diferencias: solo se crea/destruye DOM cuando cambia la pantalla; el resto se
 // actualiza en sitio (progreso, cuenta regresiva, sonido…).
 import type { AppSnapshot, AppState, ExperienceId } from '../core/contracts';
-import { artFor, brandMark, flowBackdrop } from './art';
+import { artFor, brandLogo, flowBackdrop } from './art';
 import type { ControlsPanel } from './controls';
 import { button, enter, h, leave, repeatButton, type UiCtx } from './dom';
 import { icon } from './icons';
@@ -25,6 +25,9 @@ const AR_STATES: ReadonlySet<AppState> = new Set(['scan', 'lock', 'place', 'expl
 const NUDGE_M = 0.01; // 1 cm
 const NUDGE_DEG = 1; // 1°
 const IDLE_DEFAULT_S = 10;
+const OPERATOR_HOLD_MS = 3000;
+// Experiencias aún sin contenido real: se muestran en gris con "Próximamente" y no se pueden abrir.
+const SOON: ReadonlySet<ExperienceId> = new Set(['cuenca', 'cosmos']);
 
 export function createScreens(ctx: UiCtx, L: Layers, controls: ControlsPanel) {
   const { t, act } = ctx;
@@ -37,7 +40,7 @@ export function createScreens(ctx: UiCtx, L: Layers, controls: ControlsPanel) {
 
   const bootScreen = () =>
     h('section', 'cx-screen cx-screen--boot cx-hit', [
-      brandMark('cx-mark cx-mark--lg'),
+      brandLogo(t('home.title'), 'cx-logo cx-logo--lg'),
       h('p', 'cx-boot__label', [t('loading.label')]),
       h('div', 'cx-indeterminate', [h('span')]),
     ]);
@@ -56,9 +59,43 @@ export function createScreens(ctx: UiCtx, L: Layers, controls: ControlsPanel) {
     ]);
   };
 
-  const homeScreen = () => {
+  // Modo sala: gesto oculto del operador. Mantener el logo de HOME 3 s y soltar → calibrar la mesa.
+  // Se dispara al soltar (pointerup da activación de usuario para abrir la sesión AR si no hay).
+  const operatorHold = (el: HTMLElement) => {
+    let timer = 0;
+    let armed = false;
+    el.classList.add('cx-hit', 'cx-logo--hold');
+    const cancel = () => {
+      clearTimeout(timer);
+      armed = false;
+      el.classList.remove('is-armed');
+    };
+    el.addEventListener('pointerdown', (e) => {
+      if (!e.isPrimary) return;
+      cancel();
+      timer = window.setTimeout(() => {
+        armed = true;
+        el.classList.add('is-armed');
+      }, OPERATOR_HOLD_MS);
+    });
+    el.addEventListener('pointerup', () => {
+      const go = armed;
+      cancel();
+      if (!go) return;
+      ctx.events.emit('sound', { id: 'tap' });
+      act({ type: 'recalibrate' });
+    });
+    el.addEventListener('pointercancel', cancel);
+    el.addEventListener('pointerleave', cancel);
+    el.addEventListener('contextmenu', (e) => e.preventDefault()); // sin menú "descargar imagen"
+  };
+
+  const homeScreen = (s: AppSnapshot) => {
+    const logo = brandLogo('');
+    if (s.room) operatorHold(logo);
     const cards = ctx.api.experiences.map((id, i) => {
-      const card = h('button', 'cx-card cx-hit', [
+      const soon = SOON.has(id);
+      const card = h('button', `cx-card cx-hit${soon ? ' is-soon' : ''}`, [
         h('div', 'cx-card__art', [artFor(id)]),
         h('div', 'cx-card__body', [
           h('h2', 'cx-card__title', [t(`home.card.${id}.title`)]),
@@ -66,10 +103,12 @@ export function createScreens(ctx: UiCtx, L: Layers, controls: ControlsPanel) {
           h('p', 'cx-card__discover-label', [icon('eye'), t('home.label.discover')]),
           h('p', 'cx-card__discover', [t(`home.card.${id}.body`)]),
         ]),
-        h('span', 'cx-card__go', [icon('arrow-right')]),
+        soon ? h('span', 'cx-soon', [t('home.label.soon')]) : h('span', 'cx-card__go', [icon('arrow-right')]),
       ]);
       card.type = 'button';
+      card.disabled = soon;
       card.addEventListener('click', () => {
+        if (soon) return;
         ctx.events.emit('sound', { id: 'tap' });
         act({ type: 'pick-experience', id });
       });
@@ -77,7 +116,8 @@ export function createScreens(ctx: UiCtx, L: Layers, controls: ControlsPanel) {
     });
     return h('section', 'cx-screen cx-screen--home cx-hit', [
       flowBackdrop(),
-      h('header', 'cx-home__head', [brandMark(), h('div', '', [h('h1', 'cx-home__title', [t('home.title')]), h('p', 'cx-home__subtitle', [t('home.tip.subtitle')])])]),
+      // El logo ya dice CAUCE: el título queda solo para lectores de pantalla.
+      h('header', 'cx-home__head', [logo, h('div', '', [h('h1', 'cx-home__title cx-sr', [t('home.title')]), h('p', 'cx-home__subtitle', [t('home.tip.subtitle')])])]),
       h('div', 'cx-home__cards', cards),
     ]);
   };
@@ -91,7 +131,7 @@ export function createScreens(ctx: UiCtx, L: Layers, controls: ControlsPanel) {
       screenKey = key;
       if (key === 'boot') screenEl = bootScreen();
       else if (key === 'operator') screenEl = operatorScreen(s);
-      else if (key === 'home') screenEl = homeScreen();
+      else if (key === 'home') screenEl = homeScreen(s);
       if (screenEl) L.screen.append(enter(screenEl, 'fade'));
     }
     if (operatorReasonEl && operatorReasonEl.textContent !== (s.operatorReason ?? '')) operatorReasonEl.textContent = s.operatorReason ?? '';
@@ -112,6 +152,7 @@ export function createScreens(ctx: UiCtx, L: Layers, controls: ControlsPanel) {
 
   const openIntro = (s: AppSnapshot) => {
     const d = dialog(L.modal, 'cx-dialog--intro');
+    const room = s.tableReady;
     const dots = h('div', 'cx-steps', [0, 1, 2].map(() => h('span', 'cx-steps__seg')));
     dots.setAttribute('aria-hidden', 'true');
     const stage = h('div', 'cx-intro__stage');
@@ -133,11 +174,13 @@ export function createScreens(ctx: UiCtx, L: Layers, controls: ControlsPanel) {
       load,
       paint() {
         const n = it.step + 1;
+        // Modo sala con la mesa ya calibrada: el paso 2 no habla de calibrar.
+        const base = room && n === 2 ? 'intro.room.step2' : `intro.step${n}`;
         dots.querySelectorAll('.cx-steps__seg').forEach((seg, i) => seg.classList.toggle('is-on', i <= it.step));
         const content = h('div', 'cx-intro__step', [
           h('div', 'cx-intro__ico', [icon(STEP_ICONS[it.step])]),
-          h('h2', 'cx-dialog__title', [t(`intro.step${n}.title`)]),
-          h('p', 'cx-dialog__body', [t(`intro.step${n}.body`)]),
+          h('h2', 'cx-dialog__title', [t(`${base}.title`)]),
+          h('p', 'cx-dialog__body', [t(`${base}.body`)]),
         ]);
         stage.replaceChildren(enter(content, 'left'));
         const nav: HTMLElement[] = [];
@@ -176,6 +219,7 @@ export function createScreens(ctx: UiCtx, L: Layers, controls: ControlsPanel) {
   let hudEl: HTMLElement | null = null;
   let hint: { el: HTMLElement; text: HTMLElement; ico: HTMLElement; key: string } | null = null;
   let soundBtn: HTMLButtonElement | null = null;
+  let controlsHidden = false; // el visitante puede plegar el panel de controles para ver el modelo
 
   const makeHint = (key: string, ico: string) => {
     const icoWrap = h('span', 'cx-hint__ico', [icon(ico)]);
@@ -250,7 +294,9 @@ export function createScreens(ctx: UiCtx, L: Layers, controls: ControlsPanel) {
         const he = makeHint(k, ic);
         if (w) he.classList.add('is-warn');
         root.append(he);
-        root.append(
+        // Modo sala: el visitante no recalibra (solo si la app lo sugiere, o el operador desde HOME).
+        if (!s.room)
+          root.append(
           enter(
             h('div', 'cx-rail cx-rail--left', [button(ctx, { label: t('hud.label.recalibrate'), icon: 'recalibrate', cls: 'cx-rail__btn' }, () => act({ type: 'recalibrate' }))]),
             'right',
@@ -264,11 +310,23 @@ export function createScreens(ctx: UiCtx, L: Layers, controls: ControlsPanel) {
           button(ctx, { label: t('hud.label.switch'), icon: 'switch', cls: 'cx-rail__btn' }, () => act({ type: 'switcher', open: !(prev?.switcherOpen ?? false) })),
           button(ctx, { label: t('hud.label.reset'), icon: 'reset', cls: 'cx-rail__btn' }, () => act({ type: 'reset' })),
           button(ctx, { label: t('hud.label.help'), icon: 'help', cls: 'cx-rail__btn' }, () => act({ type: 'help', open: !(prev?.helpOpen ?? false) })),
-          button(ctx, { label: t('hud.label.recalibrate'), icon: 'recalibrate', cls: 'cx-rail__btn' }, () => act({ type: 'recalibrate' })),
+          s.room ? null : button(ctx, { label: t('hud.label.recalibrate'), icon: 'recalibrate', cls: 'cx-rail__btn' }, () => act({ type: 'recalibrate' })),
           soundBtn,
         ]);
         root.append(enter(left, 'right'));
-        const right = h('div', 'cx-rail cx-rail--right cx-rail--controls', [controls.el]);
+        const fold = button(ctx, { icon: 'sliders', variant: 'icon', cls: 'cx-ctrl-fold' }, () => {
+          controlsHidden = !controlsHidden;
+          syncFold();
+        });
+        const right = h('div', 'cx-rail cx-rail--right cx-rail--controls', [fold, controls.el]);
+        const syncFold = () => {
+          const k = controlsHidden ? 'hud.label.controls_show' : 'hud.label.controls_hide';
+          right.classList.toggle('is-folded', controlsHidden);
+          fold.setAttribute('aria-expanded', String(!controlsHidden));
+          fold.setAttribute('aria-label', t(k));
+          fold.title = t(k);
+        };
+        syncFold();
         root.append(enter(right, 'left'));
         controls.set(ctx.api.getControls());
         break;
@@ -308,7 +366,8 @@ export function createScreens(ctx: UiCtx, L: Layers, controls: ControlsPanel) {
   };
 
   // ───────────── velo "Reubicando…" ─────────────
-  const veil = h('div', 'cx-veil', [h('div', 'cx-veil__pill', [h('span', 'cx-spinner'), h('span', '', [t('relocating.tip')])])]);
+  const veilText = h('span', '', [t('relocating.tip')]);
+  const veil = h('div', 'cx-veil', [h('div', 'cx-veil__pill', [h('span', 'cx-spinner'), veilText])]);
   veil.setAttribute('role', 'status');
   veil.setAttribute('aria-live', 'polite');
   L.veil.append(veil);
@@ -367,14 +426,18 @@ export function createScreens(ctx: UiCtx, L: Layers, controls: ControlsPanel) {
     const d = dialog(L.panels, 'cx-dialog--switcher', () => act({ type: 'switcher', open: false }));
     const list = ctx.api.experiences.map((id, i) => {
       const cur = id === s.experience;
-      const b = h('button', `cx-mini cx-hit${cur ? ' is-current' : ''}`, [
+      const soon = SOON.has(id);
+      const b = h('button', `cx-mini cx-hit${cur ? ' is-current' : ''}${soon ? ' is-soon' : ''}`, [
         h('div', 'cx-mini__art', [artFor(id)]),
         h('div', 'cx-mini__body', [h('h3', 'cx-mini__title', [t(`home.card.${id}.title`)]), h('p', 'cx-mini__hook', [t(`home.card.${id}.tip`)])]),
         cur ? h('span', 'cx-mini__badge', [icon('check')]) : null,
+        soon ? h('span', 'cx-soon', [t('home.label.soon')]) : null,
       ]);
       b.type = 'button';
+      b.disabled = soon;
       if (cur) b.setAttribute('aria-current', 'true');
       b.addEventListener('click', () => {
+        if (soon) return;
         ctx.events.emit('sound', { id: 'tap' });
         if (cur) act({ type: 'switcher', open: false });
         else act({ type: 'pick-experience', id });
@@ -434,6 +497,12 @@ export function createScreens(ctx: UiCtx, L: Layers, controls: ControlsPanel) {
       renderHud(s);
       const ar = AR_STATES.has(s.state);
       veil.classList.toggle('is-on', ar && s.relocating);
+      // Modo sala: casi siempre es la tablet recién sacada del soporte.
+      const vk = s.room ? 'relocating.tip.room' : 'relocating.tip';
+      if (veilText.dataset.k !== vk) {
+        veilText.dataset.k = vk;
+        veilText.textContent = t(vk);
+      }
       suggest.classList.toggle('is-on', ar && s.suggestRecalibrate && s.state !== 'lock');
       renderIdle(s);
       renderSwitcher(s);

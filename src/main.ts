@@ -1,4 +1,5 @@
-// Arranque: ?sim=1 = simulador de escritorio; ?ui=1 = página de componentes del Agente 3.
+// Arranque: ?sim=1 = simulador de escritorio; ?ui=1 = página de componentes del Agente 3;
+// ?sala=1 = modo sala (la calibración se conserva entre visitantes, D25).
 import { App, showFatal } from './core/app';
 import { createTranslator } from './core/i18n';
 import type { CauceDevHook } from './core/contracts';
@@ -40,12 +41,15 @@ async function boot(): Promise<void> {
     createFx: createFxKit,
     audio: createAudioKit(),
     simulator: params.get('sim') === '1',
+    room: params.get('sala') === '1',
   });
   if (import.meta.env.DEV) {
     const a = app;
     const hook: CauceDevHook = { app: a, getState: () => a.getState(), renderer: a.renderer, scene: a.scene };
     (window as unknown as { __cauce: CauceDevHook }).__cauce = hook;
   }
+  // Diagnóstico para el equipo (panel de estado + cubo testigo magenta): solo con ?diag=1.
+  if (params.get('diag') === '1') (await import('./core/diag')).mountDiagnostics(overlay, app);
   await app.start();
 }
 

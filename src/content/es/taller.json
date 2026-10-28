@@ -45,6 +45,7 @@
   "exp.taller.motor4t.tip.stroke3": "La bujía salta una chispa, la mezcla se quema y los gases empujan el pistón hacia abajo.",
   "exp.taller.motor4t.title.stroke4": "4. Escape",
   "exp.taller.motor4t.tip.stroke4": "La válvula de escape se abre y el pistón sube: saca los gases quemados hacia el exosto.",
+  "exp.taller.motor4t.tip.slowmo": "Toca «Cámara lenta» para leer qué pasa en cada tiempo del motor.",
   "exp.taller.motor4t.tip.flow": "Sigue la luz: gasolina → pistón → biela → cigüeñal → volante. Es el cauce de la energía.",
 
   "exp.taller.assemble.title.goal": "Reto: arma el motor",

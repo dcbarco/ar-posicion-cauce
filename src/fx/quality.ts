@@ -28,6 +28,8 @@ export const AMBER = '#F2B134';
 
 /** Amortiguación exponencial independiente de los fps. */
 export function damp(current: number, target: number, rate: number, dt: number): number {
+  // Red de seguridad: un dt no positivo o un valor no finito no debe dejar NaN pegado para siempre.
+  if (!(dt > 0) || !Number.isFinite(current)) return Number.isFinite(current) ? current : target;
   return current + (target - current) * (1 - Math.exp(-rate * dt));
 }
 

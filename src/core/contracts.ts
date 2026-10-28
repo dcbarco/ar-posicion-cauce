@@ -1,7 +1,7 @@
 ﻿// src/core/contracts.ts — tipos e interfaces compartidas entre agentes.
 // Dueño: Agente 1. Cambios SOLO vía docs/PEDIDOS-DE-CONTRATO.md.
 // Versión del contrato (súbela en cada cambio incompatible y anótalo en PEDIDOS):
-export const CONTRACT_VERSION = '0.1.1';
+export const CONTRACT_VERSION = '0.1.2';
 
 import type * as THREE from 'three';
 import type { TableSpec } from './table/spec';
@@ -135,7 +135,7 @@ export type ControlKind = ControlSpec['kind'];
 export type AppState =
   | 'boot' // comprobando soporte
   | 'operator' // sin WebXR: pantalla para el operador
-  | 'home' // selector 2D
+  | 'home' // selector 2D (en modo sala, encima de la sesión AR que sigue abierta)
   | 'intro' // modal de 3 pasos de la experiencia elegida
   | 'scan' // XR iniciado, buscando superficie
   | 'lock' // Table Lock
@@ -169,6 +169,12 @@ export interface AppSnapshot {
   /** Motivo técnico para la pantalla de operador (nunca se muestra al visitante). */
   operatorReason: string | null;
   quality: QualityLevel;
+  /** Ampliación 0.1.2 · modo sala (?sala=1, D25): la sesión AR y la calibración siguen entre visitantes. */
+  room: boolean;
+  /** Hay sesión AR abierta (en modo sala sigue abierta también en HOME e INTRO). */
+  xrActive: boolean;
+  /** Modo sala con la mesa ya calibrada: al entrar se va directo a PLACE. */
+  tableReady: boolean;
 }
 
 /** Acciones que la UI pide al núcleo. */

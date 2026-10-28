@@ -38,6 +38,9 @@ export function mountPlayground(root: HTMLElement): void {
     simulator: true,
     operatorReason: null,
     quality: 'high',
+    room: false,
+    xrActive: false,
+    tableReady: false,
   };
   const set = (patch: Partial<AppSnapshot>) => {
     snap = { ...snap, ...patch };

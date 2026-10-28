@@ -32,7 +32,7 @@ Curvas: `--cx-ease` = ease-out cubic `cubic-bezier(.215,.61,.355,1)`; `--cx-ease
 | Sugerencia de recalibrar | `suggestRecalibrate` | 350 ms | ease-out cubic | `ui.css` (`.cx-suggest`) |
 | Cuenta regresiva de inactividad | `idleCountdown` | 1 s por paso (scaleX lineal) + mano que saluda 1,2 s | lineal / ease-in-out | `screens.ts` (`renderIdle`), `ui.css` (`cx-wave`) |
 | Toast | evento `toast` | entra 350 ms, vive 3,2 s, sale 250 ms | ease-out cubic | `src/ui/overlays.ts` (`createToastHost`) |
-| Ficha flotante anclada | `label:show`; posición cada `tick` | entra 420 ms; oculta 250 ms si el ancla sale de cámara | ease-out expo | `overlays.ts` (`createFloatingLabelHost`) |
+| Ficha flotante anclada | `label:show`; posición cada `tick` | entra 420 ms (escala 0,92 → 1); oculta 250 ms si el ancla sale de cámara | ease-out expo | `overlays.ts` (`createFloatingLabelHost`) — a un costado del ancla con línea guía (D26); la caja se mueve por transform, la tarjeta interior anima |
 | Indicador de giro (spinner) | velo de reubicación | 1 s bucle | lineal | `ui.css` (`cx-spin`) |
 
 ## Escena 3D (FX)

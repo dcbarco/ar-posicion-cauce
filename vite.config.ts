@@ -1,7 +1,11 @@
+import basicSsl from '@vitejs/plugin-basic-ssl';
 import { defineConfig } from 'vitest/config';
 
 // Vite: dev en LAN (adb reverse tcp:5173) y build estático para Cloudflare Workers.
-export default defineConfig({
+// `--mode https` (npm run dev:https) sirve con certificado autofirmado: WebXR exige
+// contexto seguro y así la tablet puede entrar por la IP de la Wi-Fi sin adb.
+export default defineConfig(({ mode }) => ({
+  plugins: mode === 'https' ? [basicSsl({ name: 'cauce-dev' })] : [],
   server: { host: true, port: 5173, strictPort: true },
   preview: { host: true, port: 4173, strictPort: true },
   build: {
@@ -22,4 +26,4 @@ export default defineConfig({
     include: ['tests/**/*.test.ts', 'src/**/*.test.ts'],
     environment: 'node',
   },
-});
+}));

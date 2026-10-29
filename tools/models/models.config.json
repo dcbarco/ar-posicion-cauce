@@ -70,6 +70,126 @@
       ]
     },
     {
+      "id": "motor_electric",
+      "experience": "taller",
+      "kind": "hero",
+      "build": "tools/models/build/motor_electric.mjs",
+      "src": "assets-src/taller/motor_electric.src.glb",
+      "file": "taller/motor_electric.glb",
+      "license": "own",
+      "author": "Mesa CAUCE — Agente 2 (modelo procedural propio)",
+      "sourceUrl": "repo:tools/models/build/motor_electric.mjs",
+      "notes": "Procedural, sin texturas: PBR por factores. Un material de cobre por fase (la lógica los ilumina). Explosión en banco de taller.",
+      "clips": {
+        "anim_spin": {
+          "duration": 2,
+          "loop": true
+        }
+      },
+      "requiredParts": [
+        "housing",
+        "stator_core",
+        "coil_a",
+        "coil_b",
+        "coil_c",
+        "rotor_core",
+        "rotor_magnets",
+        "shaft",
+        "bearing_front",
+        "bearing_rear",
+        "end_cap_front",
+        "end_cap_rear",
+        "fan",
+        "terminal_box"
+      ],
+      "requiredPivots": [
+        "rotor_core",
+        "rotor_magnets",
+        "shaft"
+      ],
+      "requiredAnchors": [
+        "label_top",
+        "field"
+      ]
+    },
+    {
+      "id": "pelton",
+      "experience": "taller",
+      "kind": "hero",
+      "build": "tools/models/build/pelton.mjs",
+      "src": "assets-src/taller/pelton.src.glb",
+      "file": "taller/pelton.glb",
+      "license": "own",
+      "author": "Mesa CAUCE — Agente 2 (modelo procedural propio)",
+      "sourceUrl": "repo:tools/models/build/pelton.mjs",
+      "notes": "Procedural, sin texturas: PBR por factores. El chorro y el brillo del bombillo los dibuja la lógica (anclas jet_start, jet_end, lamp). Explosión en banco de taller.",
+      "clips": {
+        "anim_run": {
+          "duration": 3,
+          "loop": true
+        }
+      },
+      "requiredParts": [
+        "base_frame",
+        "runner_disk",
+        "buckets",
+        "shaft",
+        "nozzle",
+        "needle",
+        "penstock",
+        "generator_stator",
+        "generator_rotor",
+        "lamp"
+      ],
+      "requiredPivots": [
+        "runner_disk",
+        "buckets",
+        "shaft",
+        "generator_rotor"
+      ],
+      "requiredAnchors": [
+        "label_top",
+        "jet_start",
+        "jet_end",
+        "lamp"
+      ]
+    },
+    {
+      "id": "robot_arm",
+      "experience": "taller",
+      "kind": "hero",
+      "build": "tools/models/build/robot_arm.mjs",
+      "src": "assets-src/taller/robot_arm.src.glb",
+      "file": "taller/robot_arm.glb",
+      "license": "own",
+      "author": "Mesa CAUCE — Agente 2 (modelo procedural propio)",
+      "sourceUrl": "repo:tools/models/build/robot_arm.mjs",
+      "notes": "Procedural, sin texturas. Piezas planas: la cadena de 6 ejes la arma la lógica con extras.link de cada pieza y anchor_joint1..6 (eje y límites en extras). Sin clips: la demostración la anima la lógica. Explosión en banco de taller.",
+      "clips": {},
+      "requiredParts": [
+        "base_plate",
+        "turret",
+        "upper_arm",
+        "elbow_housing",
+        "forearm",
+        "wrist",
+        "tool_flange",
+        "gripper_body",
+        "finger_left",
+        "finger_right"
+      ],
+      "requiredAnchors": [
+        "label_top",
+        "joint1",
+        "joint2",
+        "joint3",
+        "joint4",
+        "joint5",
+        "joint6",
+        "tcp"
+      ]
+    },
+    {
       "id": "cuenca_paramo",
       "experience": "cuenca",
       "kind": "prop",

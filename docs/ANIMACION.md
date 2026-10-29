@@ -34,6 +34,14 @@ Curvas: `--cx-ease` = ease-out cubic `cubic-bezier(.215,.61,.355,1)`; `--cx-ease
 | Toast | evento `toast` | entra 350 ms, vive 3,2 s, sale 250 ms | ease-out cubic | `src/ui/overlays.ts` (`createToastHost`) |
 | Ficha flotante anclada | `label:show`; posición cada `tick` | entra 420 ms (escala 0,92 → 1); oculta 250 ms si el ancla sale de cámara | ease-out expo | `overlays.ts` (`createFloatingLabelHost`) — a un costado del ancla con línea guía (D26); la caja se mueve por transform, la tarjeta interior anima |
 | Indicador de giro (spinner) | velo de reubicación | 1 s bucle | lineal | `ui.css` (`cx-spin`) |
+| Cambio de máquina del Taller | control «Máquina» | se arma (cascada) → se disuelve 500 ms → la nueva se condensa 900 ms desde el borde | ease-out cubic / expo | `taller.ts` (`switchMachine`) con `fx.disappear` / `fx.appear` |
+| Giro del motor eléctrico | «Funcionar» | `anim_spin` 2 s bucle × velocidad | lineal | `motor_electric.glb` |
+| Corriente por fases (bobinas A, B, C) | motor eléctrico funcionando | sigue el giro: 2 ciclos por vuelta; arranca y se apaga con suavizado (τ ≈ 170 ms) | cos² | `anim/machine-fx.ts` (`createCoilFx`) |
+| Rueda y generador de la Pelton | «Funcionar» | `anim_run` 3 s bucle (2 vueltas) × velocidad | lineal | `pelton.glb` |
+| Chorro y salpicadura | Pelton funcionando | caudal sube/baja con τ ≈ 200 ms; gotas con gravedad, vida ≤ 0,9 s | lineal | `anim/machine-fx.ts` (`createPeltonFx`) |
+| Brillo del bombillo | Pelton funcionando | sigue la velocidad (τ ≈ 250 ms) | exponencial | `anim/machine-fx.ts` |
+| Demostración del brazo (recoger y dejar la esfera) | «Demostración» | 8,2 s por corrida (ida y vuelta alternadas) × velocidad | smoothstep entre claves | `logic/arm.ts` (`demoKeys`, `samplePose`), `taller.ts` (`updateArm`) |
+| Ejes y pinza del brazo hacia su objetivo | sliders «Eje 1…6», «Pinza abierta» | suavizado exponencial (7 s⁻¹) | exponencial | `taller.ts` (`updateArm`) |
 
 ## Escena 3D (FX)
 

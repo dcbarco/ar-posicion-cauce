@@ -11,3 +11,7 @@
 - 2026-10-28 · Hice (por A3): claves del panel plegable en common.json: hud.label.controls_show «Mostrar controles» y hud.label.controls_hide «Ocultar controles».
 - Sigue: revisar el tono con la guía de voz.
 - Necesito: nada.
+
+- 2026-10-28 · Hice (por A1): textos de motor eléctrico, Pelton y brazo robótico en taller.json (nombre y descripción de 56 piezas, cauce, avisos al funcionar, fases, vatios, reto y logro por máquina); el reto y el logro del 4T pasan a exp.taller.motor4t.title.goal/modal.assembled; intro paso 2 sin mencionar solo el motor.
+- Sigue: revisar el tono con la guía de voz y verificar los datos técnicos en FUENTES-TEXTOS.md.
+- Necesito: nada.

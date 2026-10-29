@@ -23,3 +23,7 @@
 - 2026-10-28 · Hice: ficha de pieza compacta a un costado del ancla con línea guía (ya no tapa la pieza; cambia de lado con histéresis) y panel de controles compacto (--cx-hit 40 px, 14 px, 250 px en vertical) plegable con botón sliders (hud.label.controls_show|hide).
 - Sigue: validar en la tablet que los objetivos de 40–44 px se tocan bien con la mano (bajan del mínimo de 56 px del brief por pedido en sala).
 - Necesito: nada.
+
+- 2026-10-28 · Hice: anim/machine-fx.ts: bobinas del motor eléctrico iluminadas por fases, chorro y salpicadura de la Pelton y brillo del bombillo; filas nuevas en ANIMACION.md.
+- Sigue: gases coloreados del motor 4T y validar en la tablet que el chorro se lee con rayos X.
+- Necesito: nada.

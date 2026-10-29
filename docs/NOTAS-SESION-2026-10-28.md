@@ -1,7 +1,8 @@
 # Notas de sesión — 2026-10-28
 
 Para retomar (`claude --resume` o leyendo este archivo). Sigue la de `NOTAS-SESION-2026-10-27.md`.
-**Nada está commiteado todavía**: todo el trabajo desde 7fc6746 está en el árbol de `main`.
+El trabajo de F1 está commiteado en la rama `f1-tablet` (5ae7133), sin integrar a `main`. Encima, también en
+`f1-tablet`: el Taller completo (D27, sección «Taller completo» abajo), probado en la tablet el 2026-10-29.
 
 ## Estado al cerrar: F1 validada en la tablet con el Taller
 
@@ -24,7 +25,7 @@ Para correrlo, detén ese servidor antes de lanzar `npm run test:e2e`.
 
 ## Pendientes antes de pasar de fase
 
-1. **Commit** de todo en una rama nueva (p. ej. `f1-tablet`) y PR a `main`. Antes, `npm run check` y `npm run test:e2e`.
+1. ~~Commit en una rama nueva~~ hecho (`f1-tablet`). Falta PR a `main` y `npm run test:e2e` (con el servidor de la tablet detenido).
 2. Decidir si se conserva el **escaneo tolerante** (hit-test que resta en vez de reiniciar y tope estimado a 0,45 m
    a los 6 s), que se añadió mientras se buscaba BUG-009.
 3. **BUG-008 (S3, abierto)**: un clic sin mover antes el ratón a veces no coloca el modelo en el simulador.
@@ -40,7 +41,7 @@ El brief (sección 15) fija el orden **Taller → Cosmos → Cuenca** y el plan 
 
 | Experiencia | Estado | Qué falta |
 | --- | --- | --- |
-| Taller | Lógica real con el motor 4T | Motor eléctrico, turbina Pelton y brazo (modelos de A2, textos de A4) |
+| Taller | **Completo (D27):** motor 4T, motor eléctrico, turbina Pelton y brazo robótico | Probado en la tablet (2026-10-29). Opcionales del brief: modo *Comparar*, dron, microscopio, gases coloreados del 4T |
 | Cosmos | `MockExperience`; en la lista `SOON` de `src/ui/screens.ts` (gris, «Próximamente») | Lógica sobre `src/core/sim/nbody.ts`, modelos de satélite, sonda y cohete, textos |
 | Cuenca | `MockExperience`; en `SOON` | Lógica sobre `watershed.ts` y `rules.json`, fichas, textos e informe |
 
@@ -48,3 +49,16 @@ El brief (sección 15) fija el orden **Taller → Cosmos → Cuenca** y el plan 
 - Las experiencias nuevas declaran sus controles con `getControls()`, y el panel compacto los pinta sin cambios en la UI.
   Si una experiencia necesita una bandeja, `.cx-tray` ya tiene su tamaño compacto.
 - Puerta de salida de F2: cada experiencia se juega de principio a fin en la tablet a ≥ 30 fps.
+
+## Taller completo (tarde del 2026-10-28; commiteado en `f1-tablet` el 2026-10-29)
+
+- **Modelos** (procedurales propios, validan sin avisos): `motor_electric` (17 piezas, 29 k tris, 305 KB),
+  `pelton` (21 piezas, 33 k tris, 370 KB) y `robot_arm` (18 piezas, 12 k tris, 170 KB). Explosión en banco de taller
+  (`tools/models/lib/hero.mjs`). Detalle en `CATALOGO-MODELOS.md`. Se regeneran con `npm run models:optimize -- --build <id>`.
+- **Lógica** (`taller.ts`): control «Máquina» con las cuatro, `SPEC` por máquina, carga bajo demanda. Brazo: 6 sliders,
+  «Pinza abierta» y «Demostración» (recoge la esfera y la deja al otro lado; `logic/arm.ts`, `tests/sim/arm.test.ts`).
+- **Efectos** (`anim/machine-fx.ts`): bobinas por fases (se ven con rayos X), chorro y salpicadura, bombillo.
+- **Textos**: 56 piezas nuevas con nombre y descripción, más avisos, fases, vatios, reto y logro por máquina.
+- Probado en el simulador (`?sim=1`): cambio entre las cuatro, funcionar, rayos X, cauce, explosión, ejes, demostración e
+  inicio del reto, sin errores de consola. Después, la persona del proyecto lo probó en la tablet (2026-10-29) y dio el
+  visto bueno. E2E sigue sin correr (puerto 5173 ocupado por el servidor de la tablet).

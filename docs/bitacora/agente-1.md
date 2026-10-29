@@ -31,3 +31,7 @@
 - 2026-10-28 · Hice: modo sala `?sala=1` (D25, contrato 0.1.2: `AppSnapshot.room/xrActive/tableReady`): salir o la inactividad vuelven a HOME sin cerrar la sesión AR ni soltar el ancla; el siguiente visitante va directo a PLACE; tracking y deriva solo se vigilan en estados AR; `recalibrate` desde HOME (operador) calibra y vuelve a HOME. Prueba e2e nueva en `tests/e2e/xr.spec.ts` (el mock acepta `lost` y cuenta sesiones).
 - Sigue: probar en la tablet que ARCore recupera el ancla al sacar la tablet del soporte tras varios minutos, y la temperatura con la cámara encendida todo el día.
 - Necesito: nada.
+
+- 2026-10-28 · Hice: Taller con 4 máquinas (D27): cambio de máquina con disolución y carga bajo demanda, SPEC por máquina, brazo robótico con cadena de 6 ejes sobre la explosión, demostración recoger-dejar (logic/arm.ts + tests/sim/arm.test.ts), lecturas de fase y vatios; arreglo: el barajado del reto conserva la altura de cada pieza.
+- Sigue: probar en la tablet el cambio de máquina (tiempo de carga), los sliders de ejes y la demostración; fps en explosión total de cada máquina.
+- Necesito: nada.

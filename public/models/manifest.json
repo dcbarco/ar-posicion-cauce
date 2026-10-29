@@ -237,6 +237,534 @@
       "notes": "Procedural (three + gltf-transform), sin texturas: PBR por factores. Meshopt. Cadena de distribución estática en anim_cycle."
     },
     {
+      "id": "motor_electric",
+      "file": "taller/motor_electric.glb",
+      "experience": "taller",
+      "tris": 29424,
+      "sizeKB": 305.1,
+      "parts": [
+        {
+          "partId": "shaft_key",
+          "labelKey": "exp.taller.motor_electric.title.shaft_key",
+          "requires": [
+            "end_cap_front"
+          ]
+        },
+        {
+          "partId": "fan_cover",
+          "labelKey": "exp.taller.motor_electric.title.fan_cover",
+          "requires": [
+            "fan"
+          ]
+        },
+        {
+          "partId": "terminal_lid",
+          "labelKey": "exp.taller.motor_electric.title.terminal_lid",
+          "requires": [
+            "terminal_box",
+            "coil_a",
+            "coil_b",
+            "coil_c"
+          ]
+        },
+        {
+          "partId": "end_cap_front",
+          "labelKey": "exp.taller.motor_electric.title.end_cap_front",
+          "requires": [
+            "bearing_front",
+            "rotor_magnets"
+          ]
+        },
+        {
+          "partId": "fan",
+          "labelKey": "exp.taller.motor_electric.title.fan",
+          "requires": [
+            "end_cap_rear"
+          ]
+        },
+        {
+          "partId": "terminal_box",
+          "labelKey": "exp.taller.motor_electric.title.terminal_box",
+          "requires": [
+            "housing"
+          ]
+        },
+        {
+          "partId": "bearing_front",
+          "labelKey": "exp.taller.motor_electric.title.bearing_front",
+          "requires": [
+            "shaft"
+          ]
+        },
+        {
+          "partId": "end_cap_rear",
+          "labelKey": "exp.taller.motor_electric.title.end_cap_rear",
+          "requires": [
+            "bearing_rear",
+            "rotor_magnets"
+          ]
+        },
+        {
+          "partId": "rotor_magnets",
+          "labelKey": "exp.taller.motor_electric.title.rotor_magnets",
+          "requires": [
+            "rotor_core"
+          ]
+        },
+        {
+          "partId": "bearing_rear",
+          "labelKey": "exp.taller.motor_electric.title.bearing_rear",
+          "requires": [
+            "shaft"
+          ]
+        },
+        {
+          "partId": "shaft",
+          "labelKey": "exp.taller.motor_electric.title.shaft",
+          "requires": [
+            "rotor_core"
+          ]
+        },
+        {
+          "partId": "rotor_core",
+          "labelKey": "exp.taller.motor_electric.title.rotor_core",
+          "requires": [
+            "coil_a",
+            "coil_b",
+            "coil_c"
+          ]
+        },
+        {
+          "partId": "coil_a",
+          "labelKey": "exp.taller.motor_electric.title.coil_a",
+          "requires": [
+            "stator_core"
+          ]
+        },
+        {
+          "partId": "coil_b",
+          "labelKey": "exp.taller.motor_electric.title.coil_b",
+          "requires": [
+            "stator_core"
+          ]
+        },
+        {
+          "partId": "coil_c",
+          "labelKey": "exp.taller.motor_electric.title.coil_c",
+          "requires": [
+            "stator_core"
+          ]
+        },
+        {
+          "partId": "stator_core",
+          "labelKey": "exp.taller.motor_electric.title.stator_core",
+          "requires": [
+            "housing"
+          ]
+        },
+        {
+          "partId": "housing",
+          "labelKey": "exp.taller.motor_electric.title.housing"
+        }
+      ],
+      "clips": [
+        {
+          "name": "anim_spin",
+          "duration": 2,
+          "loop": true
+        }
+      ],
+      "bounds": {
+        "assembled": {
+          "min": [
+            -0.1135,
+            0,
+            -0.0665
+          ],
+          "max": [
+            0.121,
+            0.1648,
+            0.0665
+          ]
+        },
+        "exploded": {
+          "min": [
+            -0.43,
+            0,
+            -0.28
+          ],
+          "max": [
+            0.4114,
+            0.134,
+            0.0665
+          ]
+        }
+      },
+      "license": "own",
+      "author": "Mesa CAUCE — Agente 2 (modelo procedural propio)",
+      "sourceUrl": "repo:tools/models/build/motor_electric.mjs",
+      "notes": "Procedural, sin texturas: PBR por factores. Un material de cobre por fase (la lógica los ilumina). Explosión en banco de taller."
+    },
+    {
+      "id": "pelton",
+      "file": "taller/pelton.glb",
+      "experience": "taller",
+      "tris": 32728,
+      "sizeKB": 370,
+      "parts": [
+        {
+          "partId": "housing_upper",
+          "labelKey": "exp.taller.pelton.title.housing_upper",
+          "requires": [
+            "runner_nut"
+          ]
+        },
+        {
+          "partId": "coupling",
+          "labelKey": "exp.taller.pelton.title.coupling",
+          "requires": [
+            "shaft",
+            "generator_rotor"
+          ]
+        },
+        {
+          "partId": "generator_cap",
+          "labelKey": "exp.taller.pelton.title.generator_cap",
+          "requires": [
+            "generator_rotor"
+          ]
+        },
+        {
+          "partId": "lamp",
+          "labelKey": "exp.taller.pelton.title.lamp",
+          "requires": [
+            "generator_stator"
+          ]
+        },
+        {
+          "partId": "needle",
+          "labelKey": "exp.taller.pelton.title.needle",
+          "requires": [
+            "nozzle"
+          ]
+        },
+        {
+          "partId": "deflector",
+          "labelKey": "exp.taller.pelton.title.deflector",
+          "requires": [
+            "nozzle"
+          ]
+        },
+        {
+          "partId": "valve_wheel",
+          "labelKey": "exp.taller.pelton.title.valve_wheel",
+          "requires": [
+            "valve_body"
+          ]
+        },
+        {
+          "partId": "pressure_gauge",
+          "labelKey": "exp.taller.pelton.title.pressure_gauge",
+          "requires": [
+            "penstock"
+          ]
+        },
+        {
+          "partId": "runner_nut",
+          "labelKey": "exp.taller.pelton.title.runner_nut",
+          "requires": [
+            "buckets"
+          ]
+        },
+        {
+          "partId": "generator_rotor",
+          "labelKey": "exp.taller.pelton.title.generator_rotor",
+          "requires": [
+            "generator_stator",
+            "shaft"
+          ]
+        },
+        {
+          "partId": "valve_body",
+          "labelKey": "exp.taller.pelton.title.valve_body",
+          "requires": [
+            "penstock"
+          ]
+        },
+        {
+          "partId": "buckets",
+          "labelKey": "exp.taller.pelton.title.buckets",
+          "requires": [
+            "runner_disk"
+          ]
+        },
+        {
+          "partId": "generator_stator",
+          "labelKey": "exp.taller.pelton.title.generator_stator",
+          "requires": [
+            "base_frame"
+          ]
+        },
+        {
+          "partId": "penstock",
+          "labelKey": "exp.taller.pelton.title.penstock",
+          "requires": [
+            "nozzle"
+          ]
+        },
+        {
+          "partId": "runner_disk",
+          "labelKey": "exp.taller.pelton.title.runner_disk",
+          "requires": [
+            "shaft",
+            "housing_lower"
+          ]
+        },
+        {
+          "partId": "nozzle",
+          "labelKey": "exp.taller.pelton.title.nozzle",
+          "requires": [
+            "housing_lower"
+          ]
+        },
+        {
+          "partId": "housing_lower",
+          "labelKey": "exp.taller.pelton.title.housing_lower",
+          "requires": [
+            "base_frame"
+          ]
+        },
+        {
+          "partId": "shaft",
+          "labelKey": "exp.taller.pelton.title.shaft",
+          "requires": [
+            "bearing_left",
+            "bearing_right"
+          ]
+        },
+        {
+          "partId": "bearing_left",
+          "labelKey": "exp.taller.pelton.title.bearing_left",
+          "requires": [
+            "base_frame"
+          ]
+        },
+        {
+          "partId": "bearing_right",
+          "labelKey": "exp.taller.pelton.title.bearing_right",
+          "requires": [
+            "base_frame"
+          ]
+        },
+        {
+          "partId": "base_frame",
+          "labelKey": "exp.taller.pelton.title.base_frame"
+        }
+      ],
+      "clips": [
+        {
+          "name": "anim_run",
+          "duration": 3,
+          "loop": true
+        }
+      ],
+      "bounds": {
+        "assembled": {
+          "min": [
+            -0.15,
+            0,
+            -0.1672
+          ],
+          "max": [
+            0.157,
+            0.234,
+            0.11
+          ]
+        },
+        "exploded": {
+          "min": [
+            -0.43,
+            0,
+            -0.28
+          ],
+          "max": [
+            0.425,
+            0.1596,
+            0.11
+          ]
+        }
+      },
+      "license": "own",
+      "author": "Mesa CAUCE — Agente 2 (modelo procedural propio)",
+      "sourceUrl": "repo:tools/models/build/pelton.mjs",
+      "notes": "Procedural, sin texturas: PBR por factores. El chorro y el brillo del bombillo los dibuja la lógica (anclas jet_start, jet_end, lamp). Explosión en banco de taller."
+    },
+    {
+      "id": "robot_arm",
+      "file": "taller/robot_arm.glb",
+      "experience": "taller",
+      "tris": 11900,
+      "sizeKB": 169.6,
+      "parts": [
+        {
+          "partId": "status_light",
+          "labelKey": "exp.taller.robot_arm.title.status_light",
+          "requires": [
+            "base_motor"
+          ]
+        },
+        {
+          "partId": "shoulder_motor",
+          "labelKey": "exp.taller.robot_arm.title.shoulder_motor",
+          "requires": [
+            "turret"
+          ]
+        },
+        {
+          "partId": "cable_upper",
+          "labelKey": "exp.taller.robot_arm.title.cable_upper",
+          "requires": [
+            "upper_arm"
+          ]
+        },
+        {
+          "partId": "finger_left",
+          "labelKey": "exp.taller.robot_arm.title.finger_left",
+          "requires": [
+            "gripper_body"
+          ]
+        },
+        {
+          "partId": "finger_right",
+          "labelKey": "exp.taller.robot_arm.title.finger_right",
+          "requires": [
+            "gripper_body"
+          ]
+        },
+        {
+          "partId": "gripper_body",
+          "labelKey": "exp.taller.robot_arm.title.gripper_body",
+          "requires": [
+            "tool_flange"
+          ]
+        },
+        {
+          "partId": "tool_flange",
+          "labelKey": "exp.taller.robot_arm.title.tool_flange",
+          "requires": [
+            "tool_motor"
+          ]
+        },
+        {
+          "partId": "tool_motor",
+          "labelKey": "exp.taller.robot_arm.title.tool_motor",
+          "requires": [
+            "wrist"
+          ]
+        },
+        {
+          "partId": "wrist",
+          "labelKey": "exp.taller.robot_arm.title.wrist",
+          "requires": [
+            "forearm",
+            "wrist_motor"
+          ]
+        },
+        {
+          "partId": "wrist_motor",
+          "labelKey": "exp.taller.robot_arm.title.wrist_motor",
+          "requires": [
+            "forearm"
+          ]
+        },
+        {
+          "partId": "forearm",
+          "labelKey": "exp.taller.robot_arm.title.forearm",
+          "requires": [
+            "forearm_motor"
+          ]
+        },
+        {
+          "partId": "forearm_motor",
+          "labelKey": "exp.taller.robot_arm.title.forearm_motor",
+          "requires": [
+            "elbow_housing"
+          ]
+        },
+        {
+          "partId": "elbow_housing",
+          "labelKey": "exp.taller.robot_arm.title.elbow_housing",
+          "requires": [
+            "upper_arm",
+            "elbow_motor"
+          ]
+        },
+        {
+          "partId": "elbow_motor",
+          "labelKey": "exp.taller.robot_arm.title.elbow_motor",
+          "requires": [
+            "upper_arm"
+          ]
+        },
+        {
+          "partId": "upper_arm",
+          "labelKey": "exp.taller.robot_arm.title.upper_arm",
+          "requires": [
+            "turret"
+          ]
+        },
+        {
+          "partId": "turret",
+          "labelKey": "exp.taller.robot_arm.title.turret",
+          "requires": [
+            "base_motor"
+          ]
+        },
+        {
+          "partId": "base_motor",
+          "labelKey": "exp.taller.robot_arm.title.base_motor",
+          "requires": [
+            "base_plate"
+          ]
+        },
+        {
+          "partId": "base_plate",
+          "labelKey": "exp.taller.robot_arm.title.base_plate"
+        }
+      ],
+      "clips": [],
+      "bounds": {
+        "assembled": {
+          "min": [
+            -0.08,
+            0,
+            -0.08
+          ],
+          "max": [
+            0.08,
+            0.248,
+            0.136
+          ]
+        },
+        "exploded": {
+          "min": [
+            -0.43,
+            0,
+            -0.28
+          ],
+          "max": [
+            0.4293,
+            0.166,
+            0.08
+          ]
+        }
+      },
+      "license": "own",
+      "author": "Mesa CAUCE — Agente 2 (modelo procedural propio)",
+      "sourceUrl": "repo:tools/models/build/robot_arm.mjs",
+      "notes": "Procedural, sin texturas. Piezas planas: la cadena de 6 ejes la arma la lógica con extras.link de cada pieza y anchor_joint1..6 (eje y límites en extras). Sin clips: la demostración la anima la lógica. Explosión en banco de taller."
+    },
+    {
       "id": "cuenca_paramo",
       "file": "cuenca/cuenca_paramo.glb",
       "experience": "cuenca",

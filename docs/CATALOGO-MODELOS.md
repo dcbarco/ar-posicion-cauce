@@ -92,6 +92,71 @@ Disposición al 100 %: columna central (cigüeñal, cilindro, culata), cárteres
 
 **Pendiente / mejoras:** AO horneado y mapas de normales (hoy solo PBR por factores; requeriría UV + horneado, sin Blender en este entorno); cadena animada; agujero de bujía en la culata (hoy la bujía atraviesa el metal sin agujero visible al desarmar).
 
+### Explosión «banco de taller» (motor eléctrico, Pelton y brazo)
+
+`tools/models/lib/hero.mjs` (`benchLayout`): al 100 % cada pieza descansa sobre el tope (y mín = 0) en filas a lo largo de X, dentro de 0,86 × 0,56 m, con un hueco central para la pieza fija (la que no se mueve: carcasa, bancada o placa base), que es donde se arma el reto. El orden de desmontaje sale de `requires` (`deriveOrder`, la misma regla del motor 4T) y `emitParts` crea `part_` → `pivot_` → `geo_`. El motor 4T conserva su explosión direccional hecha a mano.
+
+### motor_electric — Motor eléctrico trifásico (Taller)
+
+| Campo | Valor |
+| --- | --- |
+| Archivo | `public/models/taller/motor_electric.glb` |
+| Licencia / autor / fuente | own · Mesa CAUCE — Agente 2 · `repo:tools/models/build/motor_electric.mjs` |
+| Triángulos / peso | 29 424 · 305 KB (Meshopt) · 8 materiales |
+| Armado | 0,234 (X) × 0,133 (Z) × 0,165 (Y) m |
+| Desarmado (100 %) | 0,841 × 0,347 m, sin cruces de cajas |
+| Clip | `anim_spin` · 2 s · bucle (1 vuelta: núcleo del rotor, imanes, eje, chaveta y ventilador) |
+| Anclas | `label_top` (0, 0,2, 0) · `field` (centro del entrehierro) |
+
+Motor de imanes permanentes con eje sobre X a 75 mm de altura. Estator de 6 dientes; cada fase (A, B, C) es una bobina doble en dos dientes opuestos, con **su propio material de cobre** (`cobre_a|b|c`): la lógica los ilumina por turnos sincronizados con el giro (2 pares de polos → 2 ciclos eléctricos por vuelta). Los tres cobres difieren en 0,001 de rugosidad para que `dedup` no los fusione. Rotor con 4 imanes (norte en rojo, sur en azul). Materiales: pintura azul CAUCE, acero pulido, acero laminado, 3 cobres e imán norte/sur.
+
+**Piezas (17):** housing (fija), stator_core, coil_a, coil_b, coil_c, rotor_core, rotor_magnets, shaft, shaft_key, bearing_front, bearing_rear, end_cap_front, end_cap_rear, fan, fan_cover, terminal_box, terminal_lid. Montaje: carcasa → estator → bobinas → rotor → imanes y eje → rodamientos → tapas → ventilador, cubierta y chaveta; caja de bornes sobre la carcasa y su tapa al final (requiere las tres bobinas).
+
+### pelton — Turbina Pelton con generador (Taller)
+
+| Campo | Valor |
+| --- | --- |
+| Archivo | `public/models/taller/pelton.glb` |
+| Licencia / autor / fuente | own · Mesa CAUCE — Agente 2 · `repo:tools/models/build/pelton.mjs` |
+| Triángulos / peso | 32 728 · 370 KB (Meshopt) · 7 materiales |
+| Armado | 0,307 (X) × 0,277 (Z) × 0,234 (Y) m |
+| Desarmado (100 %) | 0,855 × 0,390 m, sin cruces de cajas |
+| Clip | `anim_run` · 3 s · bucle (2 vueltas; la parte de abajo de la rueda avanza con el chorro, +Z) |
+| Anclas | `label_top` · `jet_start` / `jet_end` (boquilla del inyector y cuchara de abajo) · `lamp` |
+
+Eje horizontal sobre X a 115 mm. Rueda en x = −0,045 con 16 cucharas dobles (semielipsoides abiertos hacia el chorro, con arista divisoria; material de bronce a dos caras), dentro de una carcasa con foso abierto y capota. Inyector horizontal con aguja y deflector, tubería forzada que sube por detrás con válvula de cierre, volante y manómetro. Chumaceras, acople de bridas y generador naranja con rotor de 6 polos y bombillo arriba (material `bombillo`: la lógica le sube el brillo con la velocidad). El chorro y la salpicadura no están en el GLB: los dibuja `src/experiences/taller/anim/machine-fx.ts` entre las anclas.
+
+**Piezas (21):** base_frame (fija), housing_lower, housing_upper, runner_disk, buckets, runner_nut, shaft, bearing_left, bearing_right, coupling, generator_stator, generator_rotor, generator_cap, lamp, nozzle, needle, deflector, penstock, valve_body, valve_wheel, pressure_gauge.
+
+### robot_arm — Brazo robótico de 6 ejes (Taller)
+
+| Campo | Valor |
+| --- | --- |
+| Archivo | `public/models/taller/robot_arm.glb` |
+| Licencia / autor / fuente | own · Mesa CAUCE — Agente 2 · `repo:tools/models/build/robot_arm.mjs` |
+| Triángulos / peso | 11 900 · 170 KB (Meshopt) · 6 materiales |
+| Armado (pose 0) | 0,160 (X) × 0,216 (Z) × 0,248 (Y) m |
+| Desarmado (100 %) | 0,859 × 0,360 m, sin cruces de cajas |
+| Clips | ninguno: la demostración la anima la lógica |
+| Anclas | `label_top` · `joint1`…`joint6` (punto de giro; `extras` = `{ axis, min, max }` en grados) · `tcp` (centro de los dedos) |
+
+**Cadena.** El contrato pide piezas planas (`part_*` hijas de la escena), así que la jerarquía cinemática no va en el GLB: cada pieza lleva `extras.link` (0 = base fija, 1…6 = eslabón que mueve cada eje) y los dedos `extras.finger` (±1, abren a lo largo de X). La lógica arma la cadena con las anclas `joint*`. Pose 0: brazo vertical, antebrazo y pinza hacia +Z; todas las articulaciones en x = 0.
+
+| Eje | Punto (m) | Giro | Límites |
+| --- | --- | --- | --- |
+| 1 base | (0, 0,05, 0) | Y | ±170° |
+| 2 hombro | (0, 0,105, 0) | X | −10° … 95° |
+| 3 codo | (0, 0,225, 0) | X | −60° … 150° |
+| 4 antebrazo | (0, 0,225, 0,03) | Z | ±180° |
+| 5 muñeca | (0, 0,225, 0,08) | X | ±120° |
+| 6 herramienta | (0, 0,225, 0,095) | Z | ±180° |
+
+Brazo de 0,12 m, antebrazo de 0,08 m y centro de los dedos a 0,043 m de la muñeca (mismos valores que `ARM_GEOMETRY` en `src/experiences/taller/logic/arm.ts`). Materiales: pintura naranja CAUCE, grafito, aluminio, acero, caucho y LED verde (emisivo).
+
+**Piezas (18):** base_plate (fija), base_motor, status_light, turret, shoulder_motor, upper_arm, elbow_motor, cable_upper, elbow_housing, forearm_motor, forearm, wrist_motor, wrist, tool_motor, tool_flange, gripper_body, finger_left, finger_right.
+
+**Pendiente (los tres):** AO horneado y mapas de normales, igual que el motor 4T. Revisarlos en la tablet bajo la luz de la sala.
+
 ### Fichas de Cuenca Viva (8)
 
 Procedurales propias (`repo:tools/models/build/cuenca-fichas.mjs`), estilo low-poly facetado, sin texturas. Disco base Ø 11 cm × 8 mm con **anillo de color por ficha** (reconocible a distancia). Origen en el centro de la base, Y arriba. Nodos: `geo_base`, `geo_detail`, `geo_water` (si hay agua, para que el Agente 3 pueda cambiarle el material), anclas. Licencia own.
@@ -127,5 +192,8 @@ Huella validada ≤ 12 cm de diámetro en todas. Juntas pesan ≈ 0,8 MB.
 | Modelo / asset | Licencia | Autor | Fuente |
 | --- | --- | --- | --- |
 | motor4t | own | Mesa CAUCE — Agente 2 | repo:tools/models/build/motor4t.mjs |
+| motor_electric | own | Mesa CAUCE — Agente 2 | repo:tools/models/build/motor_electric.mjs |
+| pelton | own | Mesa CAUCE — Agente 2 | repo:tools/models/build/pelton.mjs |
+| robot_arm | own | Mesa CAUCE — Agente 2 | repo:tools/models/build/robot_arm.mjs |
 | cuenca_* (8 fichas) | own | Mesa CAUCE — Agente 2 | repo:tools/models/build/cuenca-fichas.mjs |
 | andina.png, valle.png | own | Mesa CAUCE — Agente 2 | repo:tools/models/build/cuenca-heightmaps.mjs |

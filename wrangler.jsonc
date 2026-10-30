@@ -2,6 +2,10 @@
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "cauce-ar",
   "compatibility_date": "2026-10-26",
+  // Compila antes de desplegar (también en Workers Builds, aunque el panel no tenga "Build command").
+  "build": {
+    "command": "npm run build"
+  },
   "assets": {
     "directory": "./dist",
     "not_found_handling": "single-page-application"

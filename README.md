@@ -31,6 +31,6 @@ Configuración en `wrangler.jsonc`: Worker `cauce-ar` que sirve `dist/` como ass
 | Deploy command | `npx wrangler deploy` |
 | Rama de producción | `main` |
 
-La versión de Node la toma de `.node-version`. Cada push a `main` despliega; las demás ramas generan versiones de vista previa.
+`wrangler deploy` ya ejecuta `npm run build` antes de subir (`build.command` en `wrangler.jsonc`), así que basta con el deploy command. La versión de Node la toma de `.node-version`. Cada push a `main` despliega; las demás ramas generan versiones de vista previa.
 
 **Manual:** `npx wrangler login` y luego `npm run deploy`.

@@ -24,6 +24,10 @@
 - Sigue: validar en la tablet que los objetivos de 40–44 px se tocan bien con la mano (bajan del mínimo de 56 px del brief por pedido en sala).
 - Necesito: nada.
 
+- 2026-10-30 · Hice: el panel de controles con scroll pasa a un dock de burbujas (una por `group`: modelo, funcionamiento, brazo, ver por dentro, reto) que hace morph con clip-path a una hoja con solo ese grupo; si no cabe, dos columnas. Sin scroll en toda la app (HOME y diálogos `overflow: hidden`). Íconos nuevos `puzzle`, `slow`, `arm`; claves `hud.label.group_*` en lugar de `controls_show|hide`.
+- Sigue: validar en la tablet el morph durante la sesión inmersiva y que los 44 px de la hoja se tocan bien.
+- Necesito: nada.
+
 - 2026-10-28 · Hice: anim/machine-fx.ts: bobinas del motor eléctrico iluminadas por fases, chorro y salpicadura de la Pelton y brillo del bombillo; filas nuevas en ANIMACION.md.
 - Sigue: gases coloreados del motor 4T y validar en la tablet que el chorro se lee con rayos X.
 - Necesito: nada.

@@ -49,6 +49,9 @@ const P: Record<string, string> = {
   tree: '<path d="M12 21v-5M12 3l6 8h-3l4 5H5l4-5H6z"/>',
   gear: '<circle cx="12" cy="12" r="3"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M5.3 18.7l2.1-2.1M16.6 7.4l2.1-2.1"/>',
   bolt: '<path d="M13 2.5L5 13.5h6l-1 8 8-11h-6z"/>',
+  puzzle: '<path d="M4 9h4a2.5 2.5 0 1 1 5 0h4v4a2.5 2.5 0 1 1 0 5v2.5H4z"/>',
+  slow: '<path d="M7 3.5h10M7 20.5h10M8 3.5c0 4.5 8 4.5 8 8.5s-8 4-8 8.5M16 3.5c0 4.5-8 4.5-8 8.5s8 4 8 8.5"/>',
+  arm: '<path d="M4 20.5h9M8.5 20.5v-3M9.7 13.9l4.2-5.9M16.5 7.6l2.8 2.6M19.3 10.2l1.7-.5M19.3 10.2l.5 1.7"/><circle cx="8.5" cy="15.5" r="2"/><circle cx="15" cy="6.5" r="1.8"/>',
   sliders: '<path d="M4 7h9M17 7h3M4 17h3M11 17h9"/><circle cx="15" cy="7" r="2"/><circle cx="9" cy="17" r="2"/>',
 };
 

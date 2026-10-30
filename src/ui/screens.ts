@@ -219,7 +219,6 @@ export function createScreens(ctx: UiCtx, L: Layers, controls: ControlsPanel) {
   let hudEl: HTMLElement | null = null;
   let hint: { el: HTMLElement; text: HTMLElement; ico: HTMLElement; key: string } | null = null;
   let soundBtn: HTMLButtonElement | null = null;
-  let controlsHidden = false; // el visitante puede plegar el panel de controles para ver el modelo
 
   const makeHint = (key: string, ico: string) => {
     const icoWrap = h('span', 'cx-hint__ico', [icon(ico)]);
@@ -314,20 +313,8 @@ export function createScreens(ctx: UiCtx, L: Layers, controls: ControlsPanel) {
           soundBtn,
         ]);
         root.append(enter(left, 'right'));
-        const fold = button(ctx, { icon: 'sliders', variant: 'icon', cls: 'cx-ctrl-fold' }, () => {
-          controlsHidden = !controlsHidden;
-          syncFold();
-        });
-        const right = h('div', 'cx-rail cx-rail--right cx-rail--controls', [fold, controls.el]);
-        const syncFold = () => {
-          const k = controlsHidden ? 'hud.label.controls_show' : 'hud.label.controls_hide';
-          right.classList.toggle('is-folded', controlsHidden);
-          fold.setAttribute('aria-expanded', String(!controlsHidden));
-          fold.setAttribute('aria-label', t(k));
-          fold.title = t(k);
-        };
-        syncFold();
-        root.append(enter(right, 'left'));
+        controls.collapse();
+        root.append(enter(controls.el, 'left'));
         controls.set(ctx.api.getControls());
         break;
       }

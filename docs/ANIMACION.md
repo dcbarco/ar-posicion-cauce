@@ -23,6 +23,9 @@ Curvas: `--cx-ease` = ease-out cubic `cubic-bezier(.215,.61,.355,1)`; `--cx-ease
 | Indicación superior (hint) entra / cambia | cambio de pantalla AR o de mensaje | 350 ms | ease-out cubic | `screens.ts` (`setHint`), `ui.css` (`cx-hint-in`) |
 | Tablet que se mece (SCAN) | estado `scan` | 2,4 s bucle alterno | ease-in-out | `ui.css` (`cx-sway`) |
 | Rieles laterales (HUD, ±1 cm) | entrada a lock/place/explore | 350 ms | ease-out cubic | `ui.css` (`.cx-rail.cx-in > *`) |
+| Burbujas del dock de controles | entrada a explore | 420 ms (escala 0,92 → 1) | ease-out expo | `ui.css` (`.cx-dock.cx-in > .cx-dock__bubbles > *`) |
+| Morph burbuja → hoja de controles | toque en una burbuja | abre 420 ms (clip-path del círculo de la burbuja al rectángulo); contenido entra 250 ms con 120 ms de retraso; cierra 420 ms; cambio de grupo = cierre 240 ms + apertura | ease-out expo / cubic | `src/ui/controls.ts` (`open`/`close`), `ui.css` (`.cx-dock__sheet`) — única animación de `clip-path` de la UI |
+| Ícono de burbuja ↔ ✕ | burbuja activa | 350 ms (giro 90° + escala) | ease-out expo | `ui.css` (`.cx-bubble__ico`, `.cx-bubble__close`) |
 | Repetición de ±1 cm / ±1° | mantener presionado | 420 ms de espera, luego cada 110 ms | — | `src/ui/dom.ts` (`repeatButton`) |
 | Interruptor (perilla + relleno + ✓/–) | toque | 250 ms | ease-out cubic | `ui.css` (`.cx-switch*`) |
 | Relleno del slider | arrastre | inmediato (scaleX) | — | `src/ui/components.ts` (`sliderControl`) |

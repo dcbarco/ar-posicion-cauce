@@ -232,35 +232,6 @@
 }
 
 /* ───────────── controles de experiencia ───────────── */
-.cx-ctrl-panel {
-  display: flex;
-  flex-direction: column;
-  gap: var(--cx-gap);
-  width: 100%;
-  max-height: 100%;
-  padding: var(--cx-s3);
-  overflow-y: auto;
-  overscroll-behavior: contain;
-  border: 1px solid var(--cx-panel-border);
-  border-radius: var(--cx-r-lg);
-  background: var(--cx-panel);
-  -webkit-backdrop-filter: var(--cx-blur);
-  backdrop-filter: var(--cx-blur);
-  box-shadow: var(--cx-shadow);
-  pointer-events: auto;
-  scrollbar-width: thin;
-  scrollbar-color: var(--cx-accent-line) transparent;
-}
-.cx-ctrl-panel[hidden] {
-  display: none;
-}
-.cx-ctrl-sep {
-  width: 100%;
-  height: 0;
-  margin: 2px 0;
-  border: 0;
-  border-top: 1px solid var(--cx-panel-border);
-}
 .cx-ctl {
   display: flex;
   flex-direction: column;
@@ -595,101 +566,245 @@
   display: flex;
   gap: var(--cx-gap);
 }
-.cx-rail--controls {
-  width: clamp(220px, 22cqw, 270px);
+/* ───────────── dock de controles: burbujas por grupo + hoja con morph ─────────────
+ * La hoja vive detrás de la columna de burbujas: al abrir, su clip-path pasa del círculo de la burbuja
+ * tocada al rectángulo completo (ver docs/ANIMACION.md). Sin scroll: si no cabe, dos columnas. */
+.cx-dock {
+  --cx-bubble: 56px;
+  --cx-dock-morph: 420ms;
+  --cx-dock-w: clamp(300px, 30cqw, 360px);
+  position: absolute;
+  right: var(--cx-edge);
   top: 96px;
   bottom: 24px;
-  gap: var(--cx-s2);
-  transform: none;
-  max-height: none;
-  justify-content: flex-end;
+  width: 0;
+  z-index: 0; /* contexto de apilado propio: las burbujas no pasan por encima de diálogos */
+  pointer-events: none;
 }
-/* panel compacto (pedido en sala: el de 56 px tapaba un cuarto de la pantalla) */
-.cx-rail--controls .cx-ctrl-panel {
-  --cx-hit: 40px;
-  flex: 0 1 auto;
-  min-height: 0;
-  max-height: 100%;
-  gap: var(--cx-s2);
-  padding: var(--cx-s2) var(--cx-s3);
-  border-radius: var(--cx-r-md);
-  font-size: 14px;
-}
-.cx-rail--controls.is-folded .cx-ctrl-panel,
-.cx-rail--controls:has(> .cx-ctrl-panel[hidden]) .cx-ctrl-fold {
+.cx-dock[hidden] {
   display: none;
 }
-.cx-ctrl-fold[aria-expanded='true'] {
+.cx-dock__bubbles {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--cx-gap);
+}
+.cx-dock.cx-in > .cx-dock__bubbles > * {
+  animation: var(--cx-dur) var(--cx-ease-expo) backwards cx-pop-in;
+}
+.cx-dock.cx-in {
+  animation: none;
+}
+.cx-bubble {
+  position: relative;
+  width: var(--cx-bubble);
+  height: var(--cx-bubble);
+  padding: 0;
+  border: 1px solid var(--cx-panel-border);
+  border-radius: 50%;
+  background: var(--cx-panel);
+  -webkit-backdrop-filter: var(--cx-blur);
+  backdrop-filter: var(--cx-blur);
+  color: var(--cx-text);
+  box-shadow: var(--cx-shadow-sm);
+  cursor: pointer;
+  outline: none;
+  transition:
+    transform var(--cx-dur-fast) var(--cx-ease),
+    background-color var(--cx-dur-fast) var(--cx-ease),
+    color var(--cx-dur-fast) var(--cx-ease),
+    box-shadow var(--cx-dur-fast) var(--cx-ease);
+}
+.cx-bubble:active {
+  transform: scale(0.9);
+  transition-duration: var(--cx-dur-press);
+}
+.cx-bubble:focus-visible {
+  outline: 3px solid var(--cx-accent-hi);
+  outline-offset: 3px;
+}
+.cx-bubble .cx-ico {
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  transition:
+    opacity var(--cx-dur-fast) var(--cx-ease),
+    transform var(--cx-dur) var(--cx-ease-expo);
+}
+.cx-bubble__close {
+  opacity: 0;
+  transform: rotate(-90deg) scale(0.5);
+}
+.cx-bubble.is-active {
+  background: var(--cx-accent-fill);
+  border-color: transparent;
+  color: var(--cx-accent-ink);
+  box-shadow: none;
+}
+.cx-bubble.is-active .cx-bubble__ico {
+  opacity: 0;
+  transform: rotate(90deg) scale(0.5);
+}
+.cx-bubble.is-active .cx-bubble__close {
+  opacity: 1;
+  transform: none;
+}
+/* con la hoja abierta las demás burbujas quedan planas sobre ella */
+.cx-dock:has(.cx-dock__sheet.is-open) .cx-bubble:not(.is-active) {
+  background: var(--cx-fill-subtle);
+  box-shadow: none;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+.cx-dock__sheet {
+  position: absolute;
+  right: calc(-1 * var(--cx-s2));
+  bottom: calc(-1 * var(--cx-s2));
+  display: flex;
+  flex-direction: column;
+  width: var(--cx-dock-w);
+  max-width: calc(100cqw - 2 * var(--cx-edge) + var(--cx-s2));
+  max-height: calc(100% + var(--cx-s2));
+  padding: var(--cx-s3) calc(var(--cx-bubble) + var(--cx-s2) + var(--cx-s3)) var(--cx-s3) var(--cx-s4);
+  overflow: hidden;
+  border: 1px solid var(--cx-panel-border);
+  border-radius: var(--cx-r-lg);
   background: var(--cx-panel-strong);
+  -webkit-backdrop-filter: var(--cx-blur);
+  backdrop-filter: var(--cx-blur);
+  pointer-events: none;
+  /* cerrado: recortada al círculo de la burbuja (--ct/--cr/--cb/--cl los pone controls.ts) */
+  clip-path: inset(var(--ct, 50%) var(--cr, 0) var(--cb, 0) var(--cl, 50%) round calc(var(--cx-bubble) / 2));
+  transition: clip-path var(--cx-dock-morph) var(--cx-ease-expo);
+}
+.cx-dock__sheet[hidden] {
+  display: none;
+}
+.cx-dock__sheet.is-open {
+  clip-path: inset(0 round var(--cx-r-lg));
+  pointer-events: auto;
+}
+.cx-dock__sheet.is-aiming {
+  transition: none;
+}
+.cx-dock__sheet.is-swap {
+  transition-duration: 240ms;
+  transition-timing-function: var(--cx-ease);
+}
+.cx-dock__sheet.is-wide {
+  --cx-dock-w: clamp(520px, 52cqw, 640px);
+}
+.cx-dock__content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--cx-s2);
+  min-height: 0;
+  flex: 1;
+  opacity: 0;
+  transform: translateY(8px);
+  transition:
+    opacity 160ms var(--cx-ease),
+    transform 160ms var(--cx-ease);
+}
+.cx-dock__sheet.is-open .cx-dock__content {
+  opacity: 1;
+  transform: none;
+  transition-duration: var(--cx-dur-fast);
+  transition-delay: 120ms;
+}
+.cx-dock__title {
+  font-weight: 700;
+  font-size: 15px;
+  letter-spacing: 0.02em;
   color: var(--cx-accent-hi);
 }
-.cx-rail--controls .cx-ctrl-panel .cx-btn {
+.cx-dock__host {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+/* controles compactos (pedido en sala: los de 56 px tapaban un cuarto de la pantalla) */
+.cx-dock__body {
+  --cx-hit: 44px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--cx-s2);
+  font-size: 14px;
+}
+.cx-dock__sheet.is-wide .cx-dock__body {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: var(--cx-s4);
+  align-content: start;
+}
+.cx-dock__body .cx-btn {
   gap: 6px;
   padding: 0 var(--cx-s3);
   font-size: 14px;
   box-shadow: none;
 }
-.cx-rail--controls .cx-ctrl-panel .cx-ico {
+.cx-dock__body .cx-ico {
   width: 20px;
   height: 20px;
 }
-.cx-rail--controls .cx-ctl {
+.cx-dock__body .cx-ctl {
   gap: 0;
 }
-.cx-rail--controls .cx-ctrl-sep {
-  margin: 0;
-}
-.cx-rail--controls .cx-range-wrap::before,
-.cx-rail--controls .cx-range__fill {
+.cx-dock__body.cx-range-wrap::before,
+.cx-dock__body.cx-range__fill {
   left: 11px;
   right: 11px;
   height: 6px;
   margin-top: -3px;
 }
-.cx-rail--controls .cx-range::-webkit-slider-thumb {
+.cx-dock__body.cx-range::-webkit-slider-thumb {
   width: 22px;
   height: 22px;
   margin-top: calc((var(--cx-hit) - 22px) / 2);
   border-width: 3px;
 }
-.cx-rail--controls .cx-range::-moz-range-thumb {
+.cx-dock__body.cx-range::-moz-range-thumb {
   width: 16px;
   height: 16px;
   border-width: 3px;
 }
-.cx-rail--controls .cx-ctl--toggle {
+.cx-dock__body.cx-ctl--toggle {
   padding: 0 var(--cx-s1) 0 var(--cx-s3);
 }
-.cx-rail--controls .cx-switch {
+.cx-dock__body.cx-switch {
   width: 44px;
   height: 26px;
 }
-.cx-rail--controls .cx-switch__knob {
+.cx-dock__body.cx-switch__knob {
   width: 20px;
   height: 20px;
 }
-.cx-rail--controls .cx-switch__knob .cx-ico {
+.cx-dock__body.cx-switch__knob .cx-ico {
   width: 14px;
   height: 14px;
 }
-.cx-rail--controls [aria-checked='true'] > .cx-switch .cx-switch__knob {
+.cx-dock__body[aria-checked='true'] > .cx-switch .cx-switch__knob {
   transform: translateX(18px);
 }
-.cx-rail--controls .cx-seg__mark {
+.cx-dock__body.cx-seg__mark {
   width: 16px;
   height: 16px;
 }
-.cx-rail--controls .cx-readout__value {
+.cx-dock__body.cx-readout__value {
   font-size: 18px;
 }
-.cx-rail--controls .cx-tray {
+.cx-dock__body.cx-tray {
   gap: var(--cx-s2);
 }
-.cx-rail--controls .cx-tray__item {
+.cx-dock__body.cx-tray__item {
   min-height: 60px;
   font-size: 13px;
 }
-.cx-rail--controls .cx-tray__item .cx-ico {
+.cx-dock__body.cx-tray__item .cx-ico {
   width: 24px;
   height: 24px;
 }
@@ -931,7 +1046,7 @@
   width: min(620px, 100%);
   max-height: 100%;
   padding: var(--cx-s5);
-  overflow-y: auto;
+  overflow: hidden; /* la app no tiene scroll: los diálogos caben en una pantalla */
   border: 1px solid var(--cx-panel-border);
   border-radius: var(--cx-r-lg);
   background: var(--cx-panel-strong);
@@ -1520,7 +1635,7 @@
   flex-direction: column;
   gap: var(--cx-s5);
   padding: clamp(24px, 4cqh, 48px) clamp(16px, 4cqw, 56px);
-  overflow-y: auto;
+  overflow: hidden; /* sin scroll (el fondo decorativo se desborda a propósito) */
 }
 .cx-backdrop {
   position: absolute;
@@ -1720,12 +1835,8 @@
     bottom: 24px;
     transform: none;
   }
-  .cx-rail--controls {
-    top: auto;
-    bottom: 24px;
-    width: min(250px, 38cqw);
-    height: auto;
-    max-height: 40cqh;
+  .cx-dock {
+    top: 30cqh;
   }
   .cx-rail__btn {
     min-width: 0;

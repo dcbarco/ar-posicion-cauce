@@ -293,9 +293,7 @@ export function createScreens(ctx: UiCtx, L: Layers, controls: ControlsPanel) {
         const he = makeHint(k, ic);
         if (w) he.classList.add('is-warn');
         root.append(he);
-        // Modo sala: el visitante no recalibra (solo si la app lo sugiere, o el operador desde HOME).
-        if (!s.room)
-          root.append(
+        root.append(
           enter(
             h('div', 'cx-rail cx-rail--left', [button(ctx, { label: t('hud.label.recalibrate'), icon: 'recalibrate', cls: 'cx-rail__btn' }, () => act({ type: 'recalibrate' }))]),
             'right',
@@ -306,10 +304,13 @@ export function createScreens(ctx: UiCtx, L: Layers, controls: ControlsPanel) {
       case 'explore': {
         soundBtn = button(ctx, { label: '', icon: 'sound-on', cls: 'cx-rail__btn cx-rail__sound' }, () => act({ type: 'mute', muted: !(prev?.muted ?? false) }));
         const left = h('div', 'cx-rail cx-rail--left', [
-          button(ctx, { label: t('hud.label.switch'), icon: 'switch', cls: 'cx-rail__btn' }, () => act({ type: 'switcher', open: !(prev?.switcherOpen ?? false) })),
+          // Mientras todas las demás experiencias estén en SOON, "Cambiar" no lleva a ninguna parte.
+          ctx.api.experiences.some((id) => id !== s.experience && !SOON.has(id))
+            ? button(ctx, { label: t('hud.label.switch'), icon: 'switch', cls: 'cx-rail__btn' }, () => act({ type: 'switcher', open: !(prev?.switcherOpen ?? false) }))
+            : null,
           button(ctx, { label: t('hud.label.reset'), icon: 'reset', cls: 'cx-rail__btn' }, () => act({ type: 'reset' })),
           button(ctx, { label: t('hud.label.help'), icon: 'help', cls: 'cx-rail__btn' }, () => act({ type: 'help', open: !(prev?.helpOpen ?? false) })),
-          s.room ? null : button(ctx, { label: t('hud.label.recalibrate'), icon: 'recalibrate', cls: 'cx-rail__btn' }, () => act({ type: 'recalibrate' })),
+          button(ctx, { label: t('hud.label.recalibrate'), icon: 'recalibrate', cls: 'cx-rail__btn' }, () => act({ type: 'recalibrate' })),
           soundBtn,
         ]);
         root.append(enter(left, 'right'));

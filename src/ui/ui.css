@@ -570,7 +570,7 @@
  * La hoja vive detrás de la columna de burbujas: al abrir, su clip-path pasa del círculo de la burbuja
  * tocada al rectángulo completo (ver docs/ANIMACION.md). Sin scroll: si no cabe, dos columnas. */
 .cx-dock {
-  --cx-bubble: 56px;
+  --cx-bubble: 64px;
   --cx-dock-morph: 420ms;
   --cx-dock-w: clamp(300px, 30cqw, 360px);
   position: absolute;
@@ -604,13 +604,14 @@
   width: var(--cx-bubble);
   height: var(--cx-bubble);
   padding: 0;
-  border: 1px solid var(--cx-panel-border);
+  /* acción sobre el modelo: relleno naranja de marca, distinto del riel izquierdo (paneles neutros) */
+  border: 2px solid var(--cx-cream);
   border-radius: 50%;
-  background: var(--cx-panel);
-  -webkit-backdrop-filter: var(--cx-blur);
-  backdrop-filter: var(--cx-blur);
-  color: var(--cx-text);
-  box-shadow: var(--cx-shadow-sm);
+  background: var(--cx-accent-fill);
+  color: var(--cx-accent-ink);
+  box-shadow:
+    0 0 0 4px var(--cx-accent-soft),
+    0 6px 18px rgba(180, 78, 28, 0.45);
   cursor: pointer;
   outline: none;
   transition:
@@ -640,9 +641,9 @@
   transform: rotate(-90deg) scale(0.5);
 }
 .cx-bubble.is-active {
-  background: var(--cx-accent-fill);
-  border-color: transparent;
-  color: var(--cx-accent-ink);
+  background: var(--cx-cream);
+  border-color: var(--cx-accent-fill);
+  color: var(--cx-accent-fill);
   box-shadow: none;
 }
 .cx-bubble.is-active .cx-bubble__ico {
@@ -655,10 +656,7 @@
 }
 /* con la hoja abierta las demás burbujas quedan planas sobre ella */
 .cx-dock:has(.cx-dock__sheet.is-open) .cx-bubble:not(.is-active) {
-  background: var(--cx-fill-subtle);
   box-shadow: none;
-  -webkit-backdrop-filter: none;
-  backdrop-filter: none;
 }
 .cx-dock__sheet {
   position: absolute;

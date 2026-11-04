@@ -85,7 +85,7 @@ for (const [label, timeOffsetMs] of [
     page.on('pageerror', (e) => errors.push(e.message));
     page.on('console', (m) => m.type() === 'error' && errors.push(m.text()));
     await page.addInitScript(installXrMock, { ...BASE, timeOffsetMs });
-    await page.goto('/?diag=1');
+    await page.goto('/?sala=0&diag=1');
     await until(page, (s) => s.state === 'home', 'HOME');
 
     await act(page, { type: 'pick-experience', id: 'taller' });
@@ -134,7 +134,7 @@ for (const [label, timeOffsetMs] of [
   });
 }
 
-// Modo sala (?sala=1, D25): se calibra una vez y la calibración sirve al siguiente visitante, aunque la
+// Modo sala (por defecto, D25/D28): se calibra una vez y la calibración sirve al siguiente visitante, aunque la
 // tablet haya descansado en el soporte (sin tracking) más que el umbral de recalibrar.
 test('AR simulado, modo sala: el siguiente visitante no recalibra', async ({ page }, info) => {
   test.setTimeout(150_000);
@@ -142,7 +142,7 @@ test('AR simulado, modo sala: el siguiente visitante no recalibra', async ({ pag
   page.on('pageerror', (e) => errors.push(e.message));
   page.on('console', (m) => m.type() === 'error' && errors.push(m.text()));
   await page.addInitScript(installXrMock, BASE);
-  await page.goto('/?sala=1&diag=1');
+  await page.goto('/?diag=1');
   await until(page, (s) => s.state === 'home', 'HOME');
   const mock = (fn: string) => page.evaluate(fn);
 
@@ -160,9 +160,10 @@ test('AR simulado, modo sala: el siguiente visitante no recalibra', async ({ pag
   await tapCenter(page);
   await until(page, (s) => s.state === 'explore', 'EXPLORE');
 
-  // Sale: vuelve a HOME con la sesión AR abierta y la mesa calibrada.
-  await act(page, { type: 'exit' });
-  let p = await until(page, (s) => s.state === 'home', 'HOME tras salir');
+  // Nadie la usa: la inactividad vuelve a HOME con la sesión AR abierta y la mesa calibrada.
+  // Se adelanta el reloj: con WebGL por software hay pocos frames y el dt por frame está limitado.
+  await mock('window.__cauce.app.idle.tick(70000)');
+  let p = await until(page, (s) => s.state === 'home', 'HOME por inactividad');
   expect(p.state.xrActive, 'sesión AR sigue abierta').toBe(true);
   expect(p.state.tableReady, 'mesa lista').toBe(true);
   expect(p.diag.mesa, 'ancla conservada').toContain('ancla=true');

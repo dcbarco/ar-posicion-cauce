@@ -1,5 +1,5 @@
 // Arranque: ?sim=1 = simulador de escritorio; ?ui=1 = página de componentes del Agente 3;
-// ?sala=1 = modo sala (la calibración se conserva entre visitantes, D25).
+// ?sala=0 = sin modo sala (el modo sala, activo por defecto, conserva la calibración entre visitantes, D25/D28).
 import { App, showFatal } from './core/app';
 import { createTranslator } from './core/i18n';
 import type { CauceDevHook } from './core/contracts';
@@ -41,7 +41,7 @@ async function boot(): Promise<void> {
     createFx: createFxKit,
     audio: createAudioKit(),
     simulator: params.get('sim') === '1',
-    room: params.get('sala') === '1',
+    room: params.get('sala') !== '0',
   });
   if (import.meta.env.DEV) {
     const a = app;

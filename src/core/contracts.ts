@@ -169,7 +169,7 @@ export interface AppSnapshot {
   /** Motivo técnico para la pantalla de operador (nunca se muestra al visitante). */
   operatorReason: string | null;
   quality: QualityLevel;
-  /** Ampliación 0.1.2 · modo sala (?sala=1, D25): la sesión AR y la calibración siguen entre visitantes. */
+  /** Ampliación 0.1.2 · modo sala (por defecto; ?sala=0 lo apaga, D25/D28): la sesión AR y la calibración siguen entre visitantes. */
   room: boolean;
   /** Hay sesión AR abierta (en modo sala sigue abierta también en HOME e INTRO). */
   xrActive: boolean;

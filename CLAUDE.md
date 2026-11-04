@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Mesa CAUCE (`cauce-ar`): web de realidad aumentada **sin marcador** (WebXR `immersive-ar`, sin frameworks AR) para una sola tablet anclada a una mesa de 100 × 70 cm. Vite + TypeScript estricto + Three.js + GSAP. Sitio 100 % estático desplegado en Cloudflare Workers (static assets). Todo el proyecto (código, comentarios, docs, textos) está en español.
 
-El brief completo y vinculante es `Prompt maestro — Mesa CAUCE (WebXR sin marcador).md` (requisitos R1–R3, contratos de la sección 4, estándares de la sección 9, propiedad de archivos por agente). Las decisiones que lo amplían o corrigen (D1–D25) están en `docs/ARQUITECTURA.md` y prevalecen sobre el brief.
+El brief completo y vinculante es `Prompt maestro — Mesa CAUCE (WebXR sin marcador).md` (requisitos R1–R3, contratos de la sección 4, estándares de la sección 9, propiedad de archivos por agente). Las decisiones que lo amplían o corrigen (D1–D28) están en `docs/ARQUITECTURA.md` y prevalecen sobre el brief.
 
 ## Comandos
 
@@ -31,7 +31,7 @@ npm run check          # typecheck + lint + test + models:validate — debe pasa
 npm run deploy         # build + wrangler deploy
 ```
 
-Modos por URL: `?sim=1` simulador de escritorio sin XR (mesa virtual orbitable; ratón = toque, rueda = pellizco, Shift+arrastre = girar; el Table Lock se da por hecho); `?ui=1` página de componentes de la UI (`src/ui/playground.ts`); `?sala=1` modo sala (D25: la sesión AR y la calibración se conservan entre visitantes; el operador calibra desde HOME manteniendo el logo 3 s). En dev, `window.__cauce` expone `app`, `getState()`, `renderer` y `scene` (lo usan las pruebas e2e).
+Modos por URL: `?sim=1` simulador de escritorio sin XR (mesa virtual orbitable; ratón = toque, rueda = pellizco, Shift+arrastre = girar; el Table Lock se da por hecho); `?ui=1` página de componentes de la UI (`src/ui/playground.ts`); `?sala=0` apaga el modo sala, que está activo por defecto (D25/D28: la sesión AR y la calibración se conservan entre visitantes; el operador calibra desde HOME manteniendo el logo 3 s). En dev, `window.__cauce` expone `app`, `getState()`, `renderer` y `scene` (lo usan las pruebas e2e).
 
 En la tablet: `adb reverse tcp:5173 tcp:5173` y abrir `http://localhost:5173` en Chrome; depurar con `chrome://inspect`.
 

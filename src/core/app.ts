@@ -41,7 +41,7 @@ export interface AppDeps {
   createFx: (r: THREE.WebGLRenderer, s: THREE.Scene) => FxKit;
   audio: AudioKit;
   simulator: boolean;
-  /** Modo sala (?sala=1, D25): la sesión AR y la calibración se conservan entre visitantes. */
+  /** Modo sala (por defecto; ?sala=0 lo apaga, D25/D28): la sesión AR y la calibración se conservan entre visitantes. */
   room: boolean;
 }
 

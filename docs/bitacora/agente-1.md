@@ -35,3 +35,7 @@
 - 2026-10-28 · Hice: Taller con 4 máquinas (D27): cambio de máquina con disolución y carga bajo demanda, SPEC por máquina, brazo robótico con cadena de 6 ejes sobre la explosión, demostración recoger-dejar (logic/arm.ts + tests/sim/arm.test.ts), lecturas de fase y vatios; arreglo: el barajado del reto conserva la altura de cada pieza.
 - Sigue: probar en la tablet el cambio de máquina (tiempo de carga), los sliders de ejes y la demostración; fps en explosión total de cada máquina.
 - Necesito: nada.
+
+- 2026-11-04 · Hice: modo sala activo por defecto (D28); `?sala=0` vuelve al recorrido anterior. La prueba e2e de sala ahora cubre la vuelta a HOME por inactividad.
+- Sigue: probar en la tablet el ciclo completo: calibra el mediador, reposo, el siguiente visitante solo ubica el modelo.
+- Necesito: nada.
